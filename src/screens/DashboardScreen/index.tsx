@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Text, View } from 'react-native';
-import { NavigationFunctionComponent } from 'react-native-navigation';
 import styles from './styles';
 
-const DashboardScreen: NavigationFunctionComponent = () => {
+const DashboardScreen: FC = () => {
   return (
     <View style={styles.root}>
       <Text>Dashboard</Text>

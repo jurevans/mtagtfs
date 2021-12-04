@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Text, View } from 'react-native';
 import styles from './styles';
 
-const SettingsScreen = () => {
+const SettingsScreen: FC = () => {
   return (
     <View style={styles.root}>
       <Text>Settings</Text>
