@@ -9,8 +9,8 @@ import {
   MapScreen,
   SettingsScreen,
 } from 'screens';
-import store from '../store';
 
+import store from '../store';
 import { GTFS_API_GATEWAY_URL, GTFS_API_GATEWAY_KEY } from '@env';
 
 const client = new ApolloClient({
