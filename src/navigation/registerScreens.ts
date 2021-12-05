@@ -22,19 +22,29 @@ const client = new ApolloClient({
 });
 
 export default function () {
-  Navigation.registerComponent(Screens.DASHBOARD_SCREEN, () =>
-    withProviders(DashboardScreen, store, client),
+  Navigation.registerComponent(
+    Screens.DASHBOARD_SCREEN,
+    () => withProviders(DashboardScreen, store, client),
+    () => DashboardScreen,
   );
-  Navigation.registerComponent(Screens.MAP_SCREEN, () =>
-    withProviders(MapScreen, store, client),
+  Navigation.registerComponent(
+    Screens.MAP_SCREEN,
+    () => withProviders(MapScreen, store, client),
+    () => MapScreen,
   );
-  Navigation.registerComponent(Screens.FAVORITES_SCREEN, () =>
-    withProviders(FavoritesScreen, store, client),
+  Navigation.registerComponent(
+    Screens.FAVORITES_SCREEN,
+    () => withProviders(FavoritesScreen, store, client),
+    () => FavoritesScreen,
   );
-  Navigation.registerComponent(Screens.LINES_SCREEN, () =>
-    withProviders(LinesScreen, store, client),
+  Navigation.registerComponent(
+    Screens.LINES_SCREEN,
+    () => withProviders(LinesScreen, store, client),
+    () => LinesScreen,
   );
-  Navigation.registerComponent(Screens.SETTINGS_SCREEN, () =>
-    withProviders(SettingsScreen, store, client),
+  Navigation.registerComponent(
+    Screens.SETTINGS_SCREEN,
+    () => withProviders(SettingsScreen, store, client),
+    () => SettingsScreen,
   );
 }

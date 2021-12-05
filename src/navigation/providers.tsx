@@ -1,9 +1,10 @@
 import React, { FC, ReactElement } from 'react';
 import { Provider } from 'react-redux';
 import { ApolloProvider } from '@apollo/client';
+import { NavigationProvider } from 'react-native-navigation-hooks';
 
 type Props = {
-  store: any;
+  componentId: string;
 };
 
 export const withProviders =
@@ -14,9 +15,11 @@ export const withProviders =
   ): FC<P & Props> =>
   (props: P & Props): ReactElement =>
     (
-      <Provider store={store}>
-        <ApolloProvider client={client}>
-          <WrappedComponent {...props} />
-        </ApolloProvider>
-      </Provider>
+      <NavigationProvider value={{ componentId: props.componentId }}>
+        <Provider store={store}>
+          <ApolloProvider client={client}>
+            <WrappedComponent {...props} />
+          </ApolloProvider>
+        </Provider>
+      </NavigationProvider>
     );
