@@ -2,39 +2,15 @@ import { Navigation } from 'react-native-navigation';
 import { Screens } from './screens';
 import { withProviders } from './providers';
 import {
-  ApolloClient,
-  ApolloLink,
-  concat,
-  HttpLink,
-  InMemoryCache,
-} from '@apollo/client';
-import {
   DashboardScreen,
   FavoritesScreen,
   LinesScreen,
   MapScreen,
   SettingsScreen,
+  RouteScreen,
 } from 'screens';
-
-import store from '../store';
-import { GTFS_API_GATEWAY_URL, GTFS_API_GATEWAY_KEY } from '@env';
-import RouteScreen from 'screens/route/RouteScreen';
-
-const link = new HttpLink({ uri: GTFS_API_GATEWAY_URL });
-const authMiddleware = new ApolloLink((operation, forward) => {
-  operation.setContext(({ headers = {} }) => ({
-    headers: {
-      ...headers,
-      'x-api-key': GTFS_API_GATEWAY_KEY,
-    },
-  }));
-  return forward(operation);
-});
-
-const client = new ApolloClient({
-  link: concat(authMiddleware, link),
-  cache: new InMemoryCache(),
-});
+import store from 'store';
+import client from 'apollo/client';
 
 export default function () {
   Navigation.registerComponent(
