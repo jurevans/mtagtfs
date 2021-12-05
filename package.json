@@ -18,6 +18,8 @@
     "react-native-dotenv": "^3.3.0",
     "react-native-navigation": "^7.24.0",
     "react-native-navigation-hooks": "^6.3.0",
+    "react-native-svg": "^12.1.1",
+    "react-native-svg-transformer": "^0.14.3",
     "react-redux": "^7.2.6"
   },
   "devDependencies": {

@@ -7,4 +7,9 @@ export default StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'whitesmoke',
   },
+  button: {
+    alignItems: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 10,
+  },
 });

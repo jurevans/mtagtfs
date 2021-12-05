@@ -1,7 +1,13 @@
 import { Navigation } from 'react-native-navigation';
 import { Screens } from './screens';
 import { withProviders } from './providers';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  ApolloLink,
+  concat,
+  HttpLink,
+  InMemoryCache,
+} from '@apollo/client';
 import {
   DashboardScreen,
   FavoritesScreen,
@@ -12,13 +18,22 @@ import {
 
 import store from '../store';
 import { GTFS_API_GATEWAY_URL, GTFS_API_GATEWAY_KEY } from '@env';
+import RouteScreen from 'screens/route/RouteScreen';
+
+const link = new HttpLink({ uri: GTFS_API_GATEWAY_URL });
+const authMiddleware = new ApolloLink((operation, forward) => {
+  operation.setContext(({ headers = {} }) => ({
+    headers: {
+      ...headers,
+      'x-api-key': GTFS_API_GATEWAY_KEY,
+    },
+  }));
+  return forward(operation);
+});
 
 const client = new ApolloClient({
-  uri: GTFS_API_GATEWAY_URL,
+  link: concat(authMiddleware, link),
   cache: new InMemoryCache(),
-  headers: {
-    'x-api-key': GTFS_API_GATEWAY_KEY,
-  },
 });
 
 export default function () {
@@ -46,5 +61,10 @@ export default function () {
     Screens.SETTINGS_SCREEN,
     () => withProviders(SettingsScreen, store, client),
     () => SettingsScreen,
+  );
+  Navigation.registerComponent(
+    Screens.ROUTE_SCREEN,
+    () => RouteScreen,
+    () => RouteScreen,
   );
 }
