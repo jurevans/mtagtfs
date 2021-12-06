@@ -1,5 +1,5 @@
 import React, { FC, useRef } from 'react';
-import MapboxGL from '@react-native-mapbox-gl/maps';
+import MapboxGL, { MapView } from '@react-native-mapbox-gl/maps';
 import { View } from 'react-native';
 import styles from './styles';
 import { MAPBOX_ACCESS_TOKEN } from '@env';
@@ -7,12 +7,12 @@ import { MAPBOX_ACCESS_TOKEN } from '@env';
 MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 
 const MapScreen: FC = () => {
-  const ref = useRef<MapboxGL.MapView>(null);
+  const ref = useRef<MapView>(null);
 
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        <MapboxGL.MapView
+        <MapView
           style={styles.map}
           styleURL={MapboxGL.StyleURL.Dark}
           pitchEnabled={true}
