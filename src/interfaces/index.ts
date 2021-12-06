@@ -30,4 +30,5 @@ export interface Trip {
   tripHeadsign: string;
   directionId: number;
   stopTimes: StopTime[];
+  shapeId: string;
 }

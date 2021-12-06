@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react';
+import React, { FC, useCallback, useContext } from 'react';
 import {
   FlatList,
   ListRenderItemInfo,
@@ -11,7 +11,7 @@ import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
 import { Route, Trip, StopTime } from 'interfaces';
 import { useAppDispatch } from 'store';
-import { setActiveStop } from 'slices/stop';
+import { setActiveStop } from 'slices/stops';
 import styles from './styles';
 
 type Props = {
@@ -29,6 +29,7 @@ const GET_TRIP = gql`
       tripId
       tripHeadsign
       directionId
+      shapeId
       stopTimes {
         stopSequence
         departureTime {
@@ -63,24 +64,27 @@ const RouteScreen: FC<Props> = ({ route }) => {
     },
   );
 
-  const goToStop = (stopTime: StopTime) => {
-    const { stop } = stopTime;
-    const { stopId, stopName, geom } = stop;
+  const goToStop = useCallback(
+    (stopTime: StopTime) => {
+      const { stop } = stopTime;
+      const { stopId, stopName, geom } = stop;
 
-    dispatch(
-      setActiveStop({
-        stopId,
-        stopName,
-        coordinates: geom.coordinates,
-      }),
-    );
+      dispatch(
+        setActiveStop({
+          stopId,
+          stopName,
+          coordinates: geom.coordinates,
+        }),
+      );
 
-    Navigation.mergeOptions(componentId, {
-      bottomTabs: {
-        currentTabId: 'MAP_TAB',
-      },
-    });
-  };
+      Navigation.mergeOptions(componentId, {
+        bottomTabs: {
+          currentTabId: 'MAP_TAB',
+        },
+      });
+    },
+    [componentId, dispatch],
+  );
 
   const renderItem = ({ item }: ListRenderItemInfo<StopTime>) => (
     <TouchableOpacity style={styles.button} onPress={() => goToStop(item)}>

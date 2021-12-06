@@ -16,6 +16,8 @@ const MapScreen: FC = () => {
   const mapViewRef = useRef<MapboxGL.MapView>(null);
   const cameraRef = useRef<MapboxGL.Camera>(null);
   const { activeStop } = useAppSelector(state => state.stops);
+  const { activeTrip } = useAppSelector(state => state.trips);
+  console.log({ activeTrip });
   const [cameraState, setCameraState] = useState({
     zoomLevel: DEFAULT_ZOOM,
     centerCoordinate: DEFAULT_COORD,
@@ -36,7 +38,6 @@ const MapScreen: FC = () => {
 
   return (
     <View style={styles.page}>
-      {activeStop && <Text>{activeStop?.stopName}</Text>}
       <View style={styles.container}>
         <MapboxGL.MapView
           style={styles.map}
