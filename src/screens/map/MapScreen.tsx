@@ -3,6 +3,7 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import { View } from 'react-native';
 import styles from './styles';
 import { MAPBOX_ACCESS_TOKEN } from '@env';
+import { useAppSelector } from 'store/hooks';
 
 MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 
@@ -11,6 +12,8 @@ const NYC_COORD = [-73.94594865587045, 40.7227534777328];
 const MapScreen: FC = () => {
   const mapViewRef = useRef<MapboxGL.MapView>(null);
   const cameraRef = useRef<MapboxGL.Camera>(null);
+  const { message } = useAppSelector(state => state.temp);
+  console.log({ message });
 
   return (
     <View style={styles.page}>
@@ -26,6 +29,7 @@ const MapScreen: FC = () => {
             zoomLevel={11}
             centerCoordinate={NYC_COORD}
             ref={cameraRef}
+            pitch={50}
           />
         </MapboxGL.MapView>
       </View>
