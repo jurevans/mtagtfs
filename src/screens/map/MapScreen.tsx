@@ -2,8 +2,8 @@ import React, { FC, useRef } from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { View } from 'react-native';
 import styles from './styles';
-import { MAPBOX_ACCESS_TOKEN } from '@env';
 import { useAppSelector } from 'store/hooks';
+import { MAPBOX_ACCESS_TOKEN } from '@env';
 
 MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 

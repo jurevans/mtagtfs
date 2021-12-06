@@ -8,15 +8,7 @@ import {
 } from 'react-native';
 import { gql, useQuery } from '@apollo/client';
 import styles from './styles';
-
-interface Route {
-  feedIndex: number;
-  routeId: string;
-  routeShortName: string;
-  routeLongName: string;
-  routeDesc: string;
-  routeColor: string;
-}
+import { Route, Trip, StopTime } from 'interfaces';
 
 type Props = {
   route: Route;
@@ -25,31 +17,6 @@ type Props = {
 interface TripVars {
   feedIndex: number;
   routeId: string;
-}
-
-interface Stop {
-  stopId: string;
-  stopName: string;
-  geom: {
-    coordinates: [number, number];
-  };
-}
-
-interface StopTime {
-  stopSequence: number;
-  departureTime: {
-    hours: number;
-    minutes: number;
-    seconds: number;
-  };
-  stop: Stop;
-}
-
-interface Trip {
-  tripId: string;
-  tripHeadsign: string;
-  directionId: number;
-  stopTimes: StopTime[];
 }
 
 const GET_TRIP = gql`

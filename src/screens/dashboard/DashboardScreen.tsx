@@ -12,6 +12,7 @@ import {
 } from 'react-native-navigation-hooks';
 import { gql, useQuery } from '@apollo/client';
 import { Screens } from 'navigation/screens';
+import { Route } from 'interfaces';
 import styles from './styles';
 
 const DashboardScreen: FC = () => {
@@ -32,14 +33,6 @@ const DashboardScreen: FC = () => {
     }
   `;
 
-  interface Route {
-    feedIndex: number;
-    routeId: string;
-    routeShortName: string;
-    routeLongName: string;
-    routeDesc: string;
-    routeColor: string;
-  }
   interface RouteVars {
     feedIndex: number;
   }
