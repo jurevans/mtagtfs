@@ -1,3 +1,6 @@
+# ENV
+.env
+
 # OSX
 #
 .DS_Store
@@ -29,6 +32,7 @@ build/
 local.properties
 *.iml
 *.hprof
+android/gradle.properties
 
 # node.js
 #
