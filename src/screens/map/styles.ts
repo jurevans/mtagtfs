@@ -1,10 +1,18 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
-  root: {
+  page: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'whitesmoke',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  container: {
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'tomato',
+  },
+  map: {
+    flex: 1,
   },
 });

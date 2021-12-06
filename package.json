@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.5.5",
+    "@react-native-mapbox-gl/maps": "^8.5.0",
     "@reduxjs/toolkit": "^1.6.2",
     "graphql": "^16.0.1",
     "react": "17.0.2",
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@babel/runtime": "^7.12.5",
+    "@expo/config-plugins": "^4.0.11",
     "@react-native-community/eslint-config": "^2.0.0",
     "@types/jest": "^26.0.23",
     "@types/react-native": "^0.66.4",
