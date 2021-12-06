@@ -3,13 +3,13 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   root: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'whitesmoke',
   },
   button: {
-    alignItems: 'center',
     backgroundColor: '#DDDDDD',
     padding: 10,
+    borderBottomColor: '#aaa',
+    borderBottomWidth: 2,
   },
 });

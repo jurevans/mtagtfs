@@ -10,7 +10,6 @@ export default StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    backgroundColor: 'tomato',
   },
   map: {
     flex: 1,

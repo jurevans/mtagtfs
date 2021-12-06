@@ -40,7 +40,7 @@ export default function () {
   );
   Navigation.registerComponent(
     Screens.ROUTE_SCREEN,
-    () => RouteScreen,
+    () => withProviders(RouteScreen, store, client),
     () => RouteScreen,
   );
 }

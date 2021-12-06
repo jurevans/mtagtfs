@@ -1,6 +1,5 @@
 import React, { FC, useContext } from 'react';
 import {
-  Button,
   FlatList,
   ListRenderItemInfo,
   Text,
@@ -18,9 +17,12 @@ import styles from './styles';
 const DashboardScreen: FC = () => {
   const { componentId } = useContext(NavigationContext);
   const { push } = useNavigation();
+  console.log({ componentId });
+
   const GET_ROUTES = gql`
     query GetRoutes($feedIndex: Int!) {
       routes(feedIndex: $feedIndex) {
+        feedIndex
         routeId
         routeShortName
         routeLongName
@@ -31,6 +33,7 @@ const DashboardScreen: FC = () => {
   `;
 
   interface Route {
+    feedIndex: number;
     routeId: string;
     routeShortName: string;
     routeLongName: string;
@@ -68,7 +71,6 @@ const DashboardScreen: FC = () => {
 
   return (
     <View style={styles.root}>
-      <Text>Dashboard: {componentId}</Text>
       {loading && <Text>Loading...</Text>}
       {/* eslint-disable-next-line react-native/no-inline-styles */}
       {error && <Text style={{ color: 'red' }}>{error.message}</Text>}
@@ -76,12 +78,6 @@ const DashboardScreen: FC = () => {
         data={data?.routes}
         renderItem={renderItem}
         keyExtractor={(route: Route) => route.routeId}
-      />
-      <Button
-        title="Settings"
-        onPress={() => {
-          push(Screens.SETTINGS_SCREEN, { test: 'This is a test.' });
-        }}
       />
     </View>
   );
