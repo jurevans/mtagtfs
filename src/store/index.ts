@@ -1,10 +1,10 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
-import tempReducer from 'slices/temp';
+import stopReducer from 'slices/stop';
 
 const store = configureStore({
   reducer: {
-    temp: tempReducer,
+    stops: stopReducer,
   },
 });
 

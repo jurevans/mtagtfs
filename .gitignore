@@ -32,7 +32,6 @@ build/
 local.properties
 *.iml
 *.hprof
-android/gradle.properties
 
 # node.js
 #

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import {
   FlatList,
   ListRenderItemInfo,
@@ -7,8 +7,12 @@ import {
   View,
 } from 'react-native';
 import { gql, useQuery } from '@apollo/client';
-import styles from './styles';
+import { Navigation } from 'react-native-navigation';
+import { NavigationContext } from 'react-native-navigation-hooks';
 import { Route, Trip, StopTime } from 'interfaces';
+import { useAppDispatch } from 'store';
+import { setActiveStop } from 'slices/stop';
+import styles from './styles';
 
 type Props = {
   route: Route;
@@ -44,30 +48,10 @@ const GET_TRIP = gql`
   }
 `;
 
-const renderItem = ({ item }: ListRenderItemInfo<StopTime>) => (
-  <TouchableOpacity style={styles.button}>
-    <Text>
-      {item.stopSequence} - {item.stop.stopId} - {item.stop.stopName}
-    </Text>
-    <Text>
-      Departs at: {item.departureTime.hours}:{item.departureTime.minutes}:
-      {item.departureTime.seconds ? item.departureTime.seconds : '00'}
-    </Text>
-  </TouchableOpacity>
-);
-
-const renderTrip = (trip: Trip): React.ReactElement => {
-  return (
-    <FlatList
-      data={trip.stopTimes}
-      renderItem={renderItem}
-      keyExtractor={(stopTime: StopTime) => stopTime.stop.stopId}
-    />
-  );
-};
-
-const Route: FC<Props> = ({ route }) => {
+const RouteScreen: FC<Props> = ({ route }) => {
+  const { componentId = '' } = useContext(NavigationContext);
   const { feedIndex, routeId, routeLongName, routeDesc } = route;
+  const dispatch = useAppDispatch();
 
   const { loading, error, data } = useQuery<{ nextTrip: Trip }, TripVars>(
     GET_TRIP,
@@ -78,6 +62,47 @@ const Route: FC<Props> = ({ route }) => {
       },
     },
   );
+
+  const goToStop = (stopTime: StopTime) => {
+    const { stop } = stopTime;
+    const { stopId, stopName, geom } = stop;
+
+    dispatch(
+      setActiveStop({
+        stopId,
+        stopName,
+        coordinates: geom.coordinates,
+      }),
+    );
+
+    Navigation.mergeOptions(componentId, {
+      bottomTabs: {
+        currentTabId: 'MAP_TAB',
+      },
+    });
+  };
+
+  const renderItem = ({ item }: ListRenderItemInfo<StopTime>) => (
+    <TouchableOpacity style={styles.button} onPress={() => goToStop(item)}>
+      <Text>
+        {item.stopSequence} - {item.stop.stopId} - {item.stop.stopName}
+      </Text>
+      <Text>
+        Departs at: {item.departureTime.hours}:{item.departureTime.minutes}:
+        {item.departureTime.seconds ? item.departureTime.seconds : '00'}
+      </Text>
+    </TouchableOpacity>
+  );
+
+  const renderTrip = (trip: Trip): React.ReactElement => {
+    return (
+      <FlatList
+        data={trip.stopTimes}
+        renderItem={renderItem}
+        keyExtractor={(stopTime: StopTime) => stopTime.stop.stopId}
+      />
+    );
+  };
 
   return (
     <View style={styles.root}>
@@ -98,4 +123,4 @@ const Route: FC<Props> = ({ route }) => {
   );
 };
 
-export default Route;
+export default RouteScreen;
