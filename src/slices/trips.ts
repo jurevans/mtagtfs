@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Route } from 'interfaces';
+import { Route, StopTime } from 'interfaces';
 
 export interface ActiveTrip {
   tripId: string;
   shapeId: string;
   route: Route;
+  stopTimes: StopTime[];
 }
 
 interface InitialState {

@@ -80,7 +80,11 @@ const MapScreen: FC = () => {
             animationMode={'flyTo'}
           />
           {activeStop && <StopMarker stop={activeStop} />}
-          {/* TODO: Shape service in API should return GeoJSON */}
+          {/*
+            TODO: Shape service in API should return GeoJSON,
+            as well as generate line geometry for missing shapes
+            based on stop locations:
+          */}
           {data && <TripShape trip={activeTrip} shape={data.shape} />}
         </MapboxGL.MapView>
       </View>

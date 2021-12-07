@@ -93,11 +93,18 @@ const RouteScreen: FC<Props> = ({ route }) => {
         setActiveTrip({
           tripId: data.nextTrip.tripId,
           shapeId: data.nextTrip.shapeId,
+          stopTimes: data.nextTrip.stopTimes,
           route,
         }),
       );
     }
-  }, [data?.nextTrip.tripId, data?.nextTrip.shapeId, dispatch, route]);
+  }, [
+    data?.nextTrip.tripId,
+    data?.nextTrip.shapeId,
+    data?.nextTrip.stopTimes,
+    route,
+    dispatch,
+  ]);
 
   const renderItem = ({ item }: ListRenderItemInfo<StopTime>) => (
     <TouchableOpacity style={styles.button} onPress={() => goToStop(item)}>
