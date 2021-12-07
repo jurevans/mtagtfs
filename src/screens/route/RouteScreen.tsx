@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useContext } from 'react';
+import React, { FC, useCallback, useContext, useEffect } from 'react';
 import {
   FlatList,
   ListRenderItemInfo,
@@ -13,6 +13,7 @@ import { Route, Trip, StopTime } from 'interfaces';
 import { useAppDispatch } from 'store';
 import { setActiveStop } from 'slices/stops';
 import styles from './styles';
+import { setActiveTrip } from 'slices/trips';
 
 type Props = {
   route: Route;
@@ -85,6 +86,18 @@ const RouteScreen: FC<Props> = ({ route }) => {
     },
     [componentId, dispatch],
   );
+
+  useEffect(() => {
+    if (data?.nextTrip.tripId) {
+      dispatch(
+        setActiveTrip({
+          tripId: data.nextTrip.tripId,
+          shapeId: data.nextTrip.shapeId,
+          route,
+        }),
+      );
+    }
+  }, [data?.nextTrip.tripId, data?.nextTrip.shapeId, dispatch, route]);
 
   const renderItem = ({ item }: ListRenderItemInfo<StopTime>) => (
     <TouchableOpacity style={styles.button} onPress={() => goToStop(item)}>

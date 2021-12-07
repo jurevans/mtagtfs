@@ -32,3 +32,12 @@ export interface Trip {
   stopTimes: StopTime[];
   shapeId: string;
 }
+
+export interface Shape {
+  shapeId: string;
+  length: number;
+  geom: {
+    type: string;
+    coordinates: [number, number];
+  };
+}
