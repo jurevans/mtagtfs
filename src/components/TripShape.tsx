@@ -1,15 +1,14 @@
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
-import { Shape } from 'interfaces';
+import { IShape, ITrip } from 'interfaces';
 import React, { FC } from 'react';
-import { ActiveTrip } from 'slices/trips';
 
 type Props = {
-  trip: ActiveTrip | null;
-  shape: Shape;
+  trip: ITrip | null;
+  shape: IShape;
 };
 
-const getLineStyles = (trip: ActiveTrip | null) => ({
+const getLineStyles = (trip: ITrip | null) => ({
   lineColor: trip?.route.routeColor ? `#${trip?.route.routeColor}` : '#ddd',
   lineWidth: 8.5,
   lineOpacity: 0.75,

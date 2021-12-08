@@ -3,7 +3,7 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import { View } from 'react-native';
 import { gql, useQuery, useApolloClient } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
-import { Shape, StopTime } from 'interfaces';
+import { IShape, IStopTime } from 'interfaces';
 import styles from './styles';
 import { MAPBOX_ACCESS_TOKEN } from '@env';
 import TripShape from 'components/TripShape';
@@ -52,9 +52,7 @@ const MapScreen: FC = () => {
   });
 
   const { zoomLevel, centerCoordinate, pitch } = cameraState;
-  const { stopTimes } = activeTrip || {};
-
-  const { data } = useQuery<{ shape: Shape }, ShapeVars>(GET_SHAPE, {
+  const { data } = useQuery<{ shape: IShape }, ShapeVars>(GET_SHAPE, {
     variables: {
       shapeId: activeTrip?.shapeId || '',
     },
@@ -75,16 +73,16 @@ const MapScreen: FC = () => {
     [dispatch],
   );
 
-  // TODO: I'm doing something wrong here, but ideally, it would be
-  // nice to pull from ApolloClient cache instead of storing in Redux:
-  const nextTrip = client.readQuery({
+  const tripInCache = client.readQuery({
     query: GET_TRIP,
     variables: {
-      tripId: activeTrip?.tripId,
-      routeId: activeTrip?.route.routeId,
+      feedIndex: activeTrip?.feedIndex,
+      routeId: activeTrip?.routeId,
     },
   });
-  console.log({ nextTrip }); // Always = null. Why?
+
+  const { nextTrip: trip } = tripInCache || {};
+  const { stopTimes } = trip || {};
 
   useEffect(() => {
     if (activeStop) {
@@ -115,19 +113,14 @@ const MapScreen: FC = () => {
             animationDuration={ANIMATION_DURATION}
           />
           {activeStop && isMarkerVisible && <StopMarker stop={activeStop} />}
-          {/*
-            TODO: Shape service in API should return GeoJSON,
-            as well as generate line geometry for missing shapes
-            based on stop locations:
-          */}
-          {data && <TripShape trip={activeTrip} shape={data.shape} />}
+          {data && <TripShape trip={trip} shape={data.shape} />}
           {stopTimes &&
-            stopTimes.map((stopTime: StopTime) => (
+            stopTimes.map((stopTime: IStopTime) => (
               <Stop
                 key={`stop-time-${stopTime.stop.stopId}`}
                 stopTime={stopTime}
-                color={activeTrip?.route.routeColor}
-                shapeId={activeTrip?.shapeId}
+                color={trip?.route.routeColor}
+                shapeId={trip?.shapeId}
                 goToStop={goToStop}
               />
             ))}

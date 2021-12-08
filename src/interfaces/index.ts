@@ -1,4 +1,4 @@
-export interface Route {
+export interface IRoute {
   feedIndex: number;
   routeId: string;
   routeShortName: string;
@@ -15,7 +15,7 @@ export interface IStop {
   };
 }
 
-export interface StopTime {
+export interface IStopTime {
   stopSequence: number;
   departureTime: {
     hours: number;
@@ -25,15 +25,18 @@ export interface StopTime {
   stop: IStop;
 }
 
-export interface Trip {
+export interface ITrip {
+  feedIndex: number;
   tripId: string;
   tripHeadsign: string;
   directionId: number;
-  stopTimes: StopTime[];
+  stopTimes: IStopTime[];
   shapeId: string;
+  routeId: string;
+  route: IRoute;
 }
 
-export interface Shape {
+export interface IShape {
   shapeId: string;
   length: number;
   geom: {

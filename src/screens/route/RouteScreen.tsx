@@ -9,14 +9,14 @@ import {
 import { gql, useQuery } from '@apollo/client';
 import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
-import { Route, Trip, StopTime } from 'interfaces';
+import { IRoute, ITrip, IStopTime } from 'interfaces';
 import { useAppDispatch } from 'store';
 import { setActiveStop } from 'slices/stops';
 import styles from './styles';
 import { setActiveTrip } from 'slices/trips';
 
 type Props = {
-  route: Route;
+  route: IRoute;
 };
 
 interface TripVars {
@@ -27,10 +27,18 @@ interface TripVars {
 export const GET_TRIP = gql`
   query GetTrip($feedIndex: Int!, $routeId: String!) {
     nextTrip(feedIndex: $feedIndex, routeId: $routeId) {
+      feedIndex
       tripId
       tripHeadsign
       directionId
       shapeId
+      routeId
+      route {
+        routeShortName
+        routeLongName
+        routeDesc
+        routeColor
+      }
       stopTimes {
         stopSequence
         departureTime {
@@ -55,7 +63,7 @@ const RouteScreen: FC<Props> = ({ route }) => {
   const { feedIndex, routeId, routeLongName, routeDesc } = route;
   const dispatch = useAppDispatch();
 
-  const { loading, error, data } = useQuery<{ nextTrip: Trip }, TripVars>(
+  const { loading, error, data } = useQuery<{ nextTrip: ITrip }, TripVars>(
     GET_TRIP,
     {
       variables: {
@@ -64,9 +72,10 @@ const RouteScreen: FC<Props> = ({ route }) => {
       },
     },
   );
+  const { nextTrip } = data || {};
 
   const goToStop = useCallback(
-    (stopTime: StopTime) => {
+    (stopTime: IStopTime) => {
       const { stop } = stopTime;
       const { stopId, stopName, geom } = stop;
 
@@ -88,25 +97,19 @@ const RouteScreen: FC<Props> = ({ route }) => {
   );
 
   useEffect(() => {
-    if (data?.nextTrip.tripId) {
+    if (nextTrip) {
       dispatch(
         setActiveTrip({
-          tripId: data.nextTrip.tripId,
-          shapeId: data.nextTrip.shapeId,
-          stopTimes: data.nextTrip.stopTimes,
-          route,
+          feedIndex: nextTrip.feedIndex,
+          tripId: nextTrip.tripId,
+          shapeId: nextTrip.shapeId,
+          routeId: nextTrip.routeId,
         }),
       );
     }
-  }, [
-    data?.nextTrip.tripId,
-    data?.nextTrip.shapeId,
-    data?.nextTrip.stopTimes,
-    route,
-    dispatch,
-  ]);
+  }, [nextTrip, dispatch]);
 
-  const renderItem = ({ item }: ListRenderItemInfo<StopTime>) => (
+  const renderItem = ({ item }: ListRenderItemInfo<IStopTime>) => (
     <TouchableOpacity style={styles.button} onPress={() => goToStop(item)}>
       <Text>
         {item.stopSequence} - {item.stop.stopId} - {item.stop.stopName}
@@ -118,12 +121,12 @@ const RouteScreen: FC<Props> = ({ route }) => {
     </TouchableOpacity>
   );
 
-  const renderTrip = (trip: Trip): React.ReactElement => {
+  const renderTrip = (trip: ITrip): React.ReactElement => {
     return (
       <FlatList
         data={trip.stopTimes}
         renderItem={renderItem}
-        keyExtractor={(stopTime: StopTime) => stopTime.stop.stopId}
+        keyExtractor={(stopTime: IStopTime) => stopTime.stop.stopId}
       />
     );
   };

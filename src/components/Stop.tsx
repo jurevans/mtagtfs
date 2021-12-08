@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import MapboxGL, { CircleLayerStyle } from '@react-native-mapbox-gl/maps';
-import { IStop, StopTime } from 'interfaces';
+import { IStop, IStopTime } from 'interfaces';
 import * as turf from '@turf/turf';
 
 type Props = {
-  stopTime: StopTime;
+  stopTime: IStopTime;
   color?: string;
   shapeId?: string;
   goToStop: (stop: IStop) => void;
