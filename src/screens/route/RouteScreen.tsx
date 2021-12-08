@@ -14,7 +14,7 @@ import { useAppDispatch } from 'store';
 import { setActiveStop } from 'slices/stops';
 import styles from './styles';
 import { setActiveTrip } from 'slices/trips';
-import { STOP_FIELDS } from 'apollo/fragments';
+import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
 
 type Props = {
   route: IRoute;
@@ -26,20 +26,14 @@ interface TripVars {
 }
 
 export const GET_TRIP = gql`
+  ${TRIP_FIELDS}
+  ${ROUTE_FIELDS}
   ${STOP_FIELDS}
   query GetTrip($feedIndex: Int!, $routeId: String!) {
     nextTrip(feedIndex: $feedIndex, routeId: $routeId) {
-      feedIndex
-      tripId
-      tripHeadsign
-      directionId
-      shapeId
-      routeId
+      ...TripFields
       route {
-        routeShortName
-        routeLongName
-        routeDesc
-        routeColor
+        ...RouteFields
       }
       stopTimes {
         stopSequence

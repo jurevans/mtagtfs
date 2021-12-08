@@ -25,6 +25,12 @@ const client = new ApolloClient({
       Stop: {
         keyFields: Stop => `${Stop.__typename}:${Stop.stopId}`,
       },
+      Trip: {
+        keyFields: Trip => `${Trip.__typename}:${Trip.tripId}`,
+      },
+      Route: {
+        keyFields: Route => `${Route.__typename}:${Route.routeId}`,
+      },
     },
   }),
 });
