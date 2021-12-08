@@ -77,13 +77,11 @@ const RouteScreen: FC<Props> = ({ route }) => {
   const goToStop = useCallback(
     (stopTime: IStopTime) => {
       const { stop } = stopTime;
-      const { stopId, stopName, geom } = stop;
+      const { stopId } = stop;
 
       dispatch(
         setActiveStop({
           stopId,
-          stopName,
-          coordinates: geom.coordinates,
         }),
       );
 

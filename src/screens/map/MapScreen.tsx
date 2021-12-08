@@ -3,7 +3,7 @@ import MapboxGL from '@react-native-mapbox-gl/maps';
 import { View } from 'react-native';
 import { gql, useQuery, useApolloClient } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
-import { IShape, IStopTime } from 'interfaces';
+import { IShape, IStop, IStopTime, ITrip } from 'interfaces';
 import styles from './styles';
 import { MAPBOX_ACCESS_TOKEN } from '@env';
 import TripShape from 'components/TripShape';
@@ -65,8 +65,6 @@ const MapScreen: FC = () => {
       dispatch(
         setActiveStop({
           stopId: stop.stopId,
-          stopName: stop.stopName,
-          coordinates: stop.geom.coordinates,
         }),
       );
     },
@@ -81,18 +79,23 @@ const MapScreen: FC = () => {
     },
   });
 
-  const { nextTrip: trip } = tripInCache || {};
-  const { stopTimes } = trip || {};
+  const { nextTrip: trip }: { nextTrip: ITrip } = tripInCache || {};
+
+  const stopTime: IStopTime | any =
+    trip?.stopTimes.find(
+      (st: IStopTime) => st.stop.stopId === activeStop?.stopId,
+    ) || null;
+  const { stop }: { stop: IStop } = stopTime || {};
 
   useEffect(() => {
-    if (activeStop) {
+    if (stop) {
       setCameraState(state => ({
         ...state,
-        centerCoordinate: activeStop?.coordinates || DEFAULT_COORD,
+        centerCoordinate: stop?.geom.coordinates || DEFAULT_COORD,
         zoomLevel: STOP_ZOOM,
       }));
     }
-  }, [activeStop]);
+  }, [stop]);
 
   return (
     <View style={styles.page}>
@@ -112,15 +115,14 @@ const MapScreen: FC = () => {
             animationMode={'flyTo'}
             animationDuration={ANIMATION_DURATION}
           />
-          {activeStop && isMarkerVisible && <StopMarker stop={activeStop} />}
+          {stop && stop.geom && isMarkerVisible && <StopMarker stop={stop} />}
           {data && <TripShape trip={trip} shape={data.shape} />}
-          {stopTimes &&
-            stopTimes.map((stopTime: IStopTime) => (
+          {trip?.stopTimes &&
+            trip?.stopTimes.map((st: IStopTime) => (
               <Stop
-                key={`stop-time-${stopTime.stop.stopId}`}
-                stopTime={stopTime}
-                color={trip?.route.routeColor}
-                shapeId={trip?.shapeId}
+                key={`stop-time-${st.stop.stopId}`}
+                stopId={st.stop.stopId}
+                trip={trip}
                 goToStop={goToStop}
               />
             ))}

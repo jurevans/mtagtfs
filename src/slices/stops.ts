@@ -2,8 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ActiveStop {
   stopId: string;
-  stopName: string;
-  coordinates: [number, number];
 }
 
 interface InitialState {

@@ -1,12 +1,11 @@
 import React, { FC } from 'react';
 import MapboxGL, { CircleLayerStyle } from '@react-native-mapbox-gl/maps';
-import { IStop, IStopTime } from 'interfaces';
+import { IStop, IStopTime, ITrip } from 'interfaces';
 import * as turf from '@turf/turf';
 
 type Props = {
-  stopTime: IStopTime;
-  color?: string;
-  shapeId?: string;
+  stopId: string;
+  trip: ITrip;
   goToStop: (stop: IStop) => void;
 };
 
@@ -19,9 +18,14 @@ const getCircleStyles = (color?: string): CircleLayerStyle => ({
   circlePitchAlignment: 'map',
 });
 
-const Stop: FC<Props> = ({ stopTime, color, shapeId, goToStop }) => {
-  const { stop } = stopTime;
+const Stop: FC<Props> = ({ stopId, trip, goToStop }) => {
+  const stopTime: IStopTime | any = trip.stopTimes.find(
+    (st: IStopTime) => st.stop.stopId === stopId,
+  );
+  const { stop }: { stop: IStop } = stopTime || {};
+  const { shapeId } = trip;
   const point = turf.point(stop.geom.coordinates);
+  const color = trip.route.routeColor;
 
   return (
     <MapboxGL.ShapeSource
