@@ -14,14 +14,13 @@ const getLineStyles = (trip: ITrip | null) => ({
   lineOpacity: 0.75,
 });
 
-const TripShape: FC<Props> = ({ shape, trip }) => {
-  const { shapeId, geom } = shape;
-  const lineString = turf.lineString(geom.coordinates as any);
+const TripShape: FC<Props> = ({ shape = {}, trip }) => {
+  let { shapeId, geom } = shape;
+
+  const lineString = turf.lineString(geom?.coordinates as any);
 
   return (
-    <MapboxGL.ShapeSource
-      id={`shape-source-${shape.shapeId}`}
-      shape={lineString}>
+    <MapboxGL.ShapeSource id={`shape-source-${shapeId}`} shape={lineString}>
       <MapboxGL.LineLayer
         id={`line-layer-${shapeId}`}
         style={getLineStyles(trip)}

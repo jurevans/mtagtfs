@@ -20,7 +20,13 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 const client = new ApolloClient({
   link: concat(authMiddleware, link),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Stop: {
+        keyFields: Stop => `${Stop.__typename}:${Stop.stopId}`,
+      },
+    },
+  }),
 });
 
 export default client;

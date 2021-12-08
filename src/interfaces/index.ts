@@ -1,3 +1,5 @@
+type Coordinate = [number, number];
+
 export interface IRoute {
   feedIndex: number;
   routeId: string;
@@ -11,7 +13,7 @@ export interface IStop {
   stopId: string;
   stopName: string;
   geom: {
-    coordinates: [number, number];
+    coordinates: Coordinate;
   };
 }
 
@@ -41,6 +43,6 @@ export interface IShape {
   length: number;
   geom: {
     type: string;
-    coordinates: [number, number];
+    coordinates: Coordinate[];
   };
 }

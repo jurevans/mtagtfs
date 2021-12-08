@@ -11,13 +11,14 @@ import StopMarker from 'components/StopMarker';
 import { GET_TRIP } from 'screens/route/RouteScreen';
 import Stop from 'components/Stop';
 import { setActiveStop } from 'slices/stops';
+import { STOP_FIELDS } from 'apollo/fragments';
 
 MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 
 const DEFAULT_COORD = [-73.94594865587045, 40.7227534777328];
 const DEFAULT_ZOOM = 11;
 const STOP_ZOOM = 15;
-const ANIMATION_DURATION = 2000;
+const ANIMATION_DURATION = 1500;
 
 interface ShapeVars {
   shapeId: string;
@@ -58,8 +59,8 @@ const MapScreen: FC = () => {
     },
   });
 
-  const goToStop = useCallback(
-    stop => {
+  const onStopPress = useCallback(
+    (stop: IStop) => {
       setMarkerVisible(false);
       setTimeout(() => setMarkerVisible(true), ANIMATION_DURATION);
       dispatch(
@@ -81,11 +82,12 @@ const MapScreen: FC = () => {
 
   const { nextTrip: trip }: { nextTrip: ITrip } = tripInCache || {};
 
-  const stopTime: IStopTime | any =
-    trip?.stopTimes.find(
-      (st: IStopTime) => st.stop.stopId === activeStop?.stopId,
-    ) || null;
-  const { stop }: { stop: IStop } = stopTime || {};
+  const stop = client.readFragment({
+    id: `Stop:${activeStop?.stopId}`,
+    fragment: gql`
+      ${STOP_FIELDS}
+    `,
+  });
 
   useEffect(() => {
     if (stop) {
@@ -121,9 +123,10 @@ const MapScreen: FC = () => {
             trip?.stopTimes.map((st: IStopTime) => (
               <Stop
                 key={`stop-time-${st.stop.stopId}`}
-                stopId={st.stop.stopId}
-                trip={trip}
-                goToStop={goToStop}
+                stop={st.stop}
+                color={trip.route.routeColor}
+                aboveLayerID={`line-layer-${trip.shapeId}`}
+                onPress={onStopPress}
               />
             ))}
         </MapboxGL.MapView>

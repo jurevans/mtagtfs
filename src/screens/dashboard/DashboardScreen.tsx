@@ -12,7 +12,7 @@ import {
 } from 'react-native-navigation-hooks';
 import { gql, useQuery } from '@apollo/client';
 import { Screens } from 'navigation/screens';
-import { Route } from 'interfaces';
+import { IRoute } from 'interfaces';
 import styles from './styles';
 
 const DashboardScreen: FC = () => {
@@ -37,7 +37,7 @@ const DashboardScreen: FC = () => {
     feedIndex: number;
   }
 
-  const { loading, error, data } = useQuery<{ routes: Route[] }, RouteVars>(
+  const { loading, error, data } = useQuery<{ routes: IRoute[] }, RouteVars>(
     GET_ROUTES,
     {
       variables: {
@@ -46,7 +46,7 @@ const DashboardScreen: FC = () => {
     },
   );
 
-  const renderItem = ({ item }: ListRenderItemInfo<Route>) => (
+  const renderItem = ({ item }: ListRenderItemInfo<IRoute>) => (
     <TouchableOpacity
       style={{
         ...styles.button,
@@ -70,7 +70,7 @@ const DashboardScreen: FC = () => {
       <FlatList
         data={data?.routes}
         renderItem={renderItem}
-        keyExtractor={(route: Route) => route.routeId}
+        keyExtractor={(route: IRoute) => route.routeId}
       />
     </View>
   );
