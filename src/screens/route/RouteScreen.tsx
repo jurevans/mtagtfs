@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback, useContext, useEffect } from 'react';
 import {
   FlatList,
   ListRenderItemInfo,
@@ -7,19 +7,17 @@ import {
   View,
 } from 'react-native';
 import { gql, useQuery } from '@apollo/client';
+import { Navigation } from 'react-native-navigation';
+import { NavigationContext } from 'react-native-navigation-hooks';
+import { IRoute, ITrip, IStopTime } from 'interfaces';
+import { useAppDispatch } from 'store';
+import { setActiveStop } from 'slices/stops';
 import styles from './styles';
-
-interface Route {
-  feedIndex: number;
-  routeId: string;
-  routeShortName: string;
-  routeLongName: string;
-  routeDesc: string;
-  routeColor: string;
-}
+import { setActiveTrip } from 'slices/trips';
+import { STOP_FIELDS } from 'apollo/fragments';
 
 type Props = {
-  route: Route;
+  route: IRoute;
 };
 
 interface TripVars {
@@ -27,37 +25,22 @@ interface TripVars {
   routeId: string;
 }
 
-interface Stop {
-  stopId: string;
-  stopName: string;
-  geom: {
-    coordinates: [number, number];
-  };
-}
-
-interface StopTime {
-  stopSequence: number;
-  departureTime: {
-    hours: number;
-    minutes: number;
-    seconds: number;
-  };
-  stop: Stop;
-}
-
-interface Trip {
-  tripId: string;
-  tripHeadsign: string;
-  directionId: number;
-  stopTimes: StopTime[];
-}
-
-const GET_TRIP = gql`
+export const GET_TRIP = gql`
+  ${STOP_FIELDS}
   query GetTrip($feedIndex: Int!, $routeId: String!) {
     nextTrip(feedIndex: $feedIndex, routeId: $routeId) {
+      feedIndex
       tripId
       tripHeadsign
       directionId
+      shapeId
+      routeId
+      route {
+        routeShortName
+        routeLongName
+        routeDesc
+        routeColor
+      }
       stopTimes {
         stopSequence
         departureTime {
@@ -66,43 +49,19 @@ const GET_TRIP = gql`
           seconds
         }
         stop {
-          stopId
-          stopName
-          geom {
-            coordinates
-          }
+          ...StopFields
         }
       }
     }
   }
 `;
 
-const renderItem = ({ item }: ListRenderItemInfo<StopTime>) => (
-  <TouchableOpacity style={styles.button}>
-    <Text>
-      {item.stopSequence} - {item.stop.stopId} - {item.stop.stopName}
-    </Text>
-    <Text>
-      Departs at: {item.departureTime.hours}:{item.departureTime.minutes}:
-      {item.departureTime.seconds ? item.departureTime.seconds : '00'}
-    </Text>
-  </TouchableOpacity>
-);
-
-const renderTrip = (trip: Trip): React.ReactElement => {
-  return (
-    <FlatList
-      data={trip.stopTimes}
-      renderItem={renderItem}
-      keyExtractor={(stopTime: StopTime) => stopTime.stop.stopId}
-    />
-  );
-};
-
-const Route: FC<Props> = ({ route }) => {
+const RouteScreen: FC<Props> = ({ route }) => {
+  const { componentId = '' } = useContext(NavigationContext);
   const { feedIndex, routeId, routeLongName, routeDesc } = route;
+  const dispatch = useAppDispatch();
 
-  const { loading, error, data } = useQuery<{ nextTrip: Trip }, TripVars>(
+  const { loading, error, data } = useQuery<{ nextTrip: ITrip }, TripVars>(
     GET_TRIP,
     {
       variables: {
@@ -111,6 +70,62 @@ const Route: FC<Props> = ({ route }) => {
       },
     },
   );
+  const { nextTrip } = data || {};
+
+  const goToStop = useCallback(
+    (stopTime: IStopTime) => {
+      const { stop } = stopTime;
+      const { stopId } = stop;
+
+      dispatch(
+        setActiveStop({
+          stopId,
+        }),
+      );
+
+      Navigation.mergeOptions(componentId, {
+        bottomTabs: {
+          currentTabId: 'MAP_TAB',
+        },
+      });
+    },
+    [componentId, dispatch],
+  );
+
+  useEffect(() => {
+    if (nextTrip) {
+      dispatch(
+        setActiveTrip({
+          feedIndex: nextTrip.feedIndex,
+          tripId: nextTrip.tripId,
+          shapeId: nextTrip.shapeId,
+          routeId: nextTrip.routeId,
+        }),
+      );
+    }
+  }, [nextTrip, dispatch]);
+
+  const renderItem = ({ item }: ListRenderItemInfo<IStopTime>) => (
+    <TouchableOpacity style={styles.button} onPress={() => goToStop(item)}>
+      <Text>
+        {item.stopSequence} - {item.stop.stopId} - {item.stop.stopName}
+      </Text>
+      <Text>
+        Departs at: {item.departureTime.hours}:{item.departureTime.minutes}:
+        {item.departureTime.seconds ? item.departureTime.seconds : '00'}
+      </Text>
+    </TouchableOpacity>
+  );
+
+  const renderTrip = (trip: ITrip): React.ReactElement => {
+    return (
+      <FlatList
+        data={trip.stopTimes}
+        renderItem={renderItem}
+        keyExtractor={(stopTime: IStopTime) => stopTime.stop.stopId}
+      />
+    );
+  };
 
   return (
     <View style={styles.root}>
@@ -131,4 +146,4 @@ const Route: FC<Props> = ({ route }) => {
   );
 };
 
-export default Route;
+export default RouteScreen;
