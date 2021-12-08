@@ -117,7 +117,7 @@ const MapScreen: FC = () => {
             animationMode={'flyTo'}
             animationDuration={ANIMATION_DURATION}
           />
-          {stop && stop.geom && isMarkerVisible && <StopMarker stop={stop} />}
+          {stop?.geom && isMarkerVisible && <StopMarker stop={stop} />}
           {data && <TripShape trip={trip} shape={data.shape} />}
           {trip?.stopTimes &&
             trip?.stopTimes.map((st: IStopTime) => (
