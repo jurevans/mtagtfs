@@ -24,7 +24,7 @@ interface TripVars {
   routeId: string;
 }
 
-const GET_TRIP = gql`
+export const GET_TRIP = gql`
   query GetTrip($feedIndex: Int!, $routeId: String!) {
     nextTrip(feedIndex: $feedIndex, routeId: $routeId) {
       tripId

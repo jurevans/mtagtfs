@@ -7,7 +7,7 @@ export interface Route {
   routeColor: string;
 }
 
-export interface Stop {
+export interface IStop {
   stopId: string;
   stopName: string;
   geom: {
@@ -22,7 +22,7 @@ export interface StopTime {
     minutes: number;
     seconds: number;
   };
-  stop: Stop;
+  stop: IStop;
 }
 
 export interface Trip {
