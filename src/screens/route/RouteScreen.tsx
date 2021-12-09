@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
 import { IRoute, ITrip, IStopTime } from 'interfaces';
@@ -14,7 +14,7 @@ import { useAppDispatch } from 'store';
 import { setActiveStop } from 'slices/stops';
 import styles from './styles';
 import { setActiveTrip } from 'slices/trips';
-import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
+import { GET_TRIP } from 'apollo/queries';
 
 type Props = {
   route: IRoute;
@@ -24,31 +24,6 @@ interface TripVars {
   feedIndex: number;
   routeId: string;
 }
-
-export const GET_TRIP = gql`
-  ${TRIP_FIELDS}
-  ${ROUTE_FIELDS}
-  ${STOP_FIELDS}
-  query GetTrip($feedIndex: Int!, $routeId: String!) {
-    nextTrip(feedIndex: $feedIndex, routeId: $routeId) {
-      ...TripFields
-      route {
-        ...RouteFields
-      }
-      stopTimes {
-        stopSequence
-        departureTime {
-          hours
-          minutes
-          seconds
-        }
-        stop {
-          ...StopFields
-        }
-      }
-    }
-  }
-`;
 
 const RouteScreen: FC<Props> = ({ route }) => {
   const { componentId = '' } = useContext(NavigationContext);

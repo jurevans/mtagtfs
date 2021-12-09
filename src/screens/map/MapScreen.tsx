@@ -5,11 +5,11 @@ import { useAppDispatch, useAppSelector } from 'store/hooks';
 import Map from 'components/Map';
 import TripShape from 'components/TripShape';
 import StopMarker from 'components/StopMarker';
-import { Coordinate, IShape, IStop, IStopTime, ITrip } from 'interfaces';
-import { GET_TRIP } from 'screens/route/RouteScreen';
 import Stop from 'components/Stop';
 import { setActiveStop } from 'slices/stops';
+import { GET_SHAPE, GET_TRIP } from 'apollo/queries';
 import { STOP_FIELDS } from 'apollo/fragments';
+import { Coordinate, IShape, IStop, IStopTime, ITrip } from 'interfaces';
 import styles from './styles';
 
 const DEFAULT_COORD: Coordinate = [-73.94594865587045, 40.7227534777328];
@@ -20,19 +20,6 @@ const ANIMATION_DURATION = 1500;
 interface ShapeVars {
   shapeId: string;
 }
-
-const GET_SHAPE = gql`
-  query GetShape($shapeId: String!) {
-    shape(shapeId: $shapeId) {
-      shapeId
-      length
-      geom {
-        type
-        coordinates
-      }
-    }
-  }
-`;
 
 const MapScreen: FC = () => {
   const { activeStop } = useAppSelector(state => state.stops);

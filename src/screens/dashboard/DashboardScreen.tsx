@@ -10,7 +10,8 @@ import {
   NavigationContext,
   useNavigation,
 } from 'react-native-navigation-hooks';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import { GET_ROUTES } from 'apollo/queries';
 import { Screens } from 'navigation/screens';
 import { IRoute } from 'interfaces';
 import styles from './styles';
@@ -19,19 +20,6 @@ const DashboardScreen: FC = () => {
   const { componentId } = useContext(NavigationContext);
   const { push } = useNavigation();
   console.log({ componentId });
-
-  const GET_ROUTES = gql`
-    query GetRoutes($feedIndex: Int!) {
-      routes(feedIndex: $feedIndex) {
-        feedIndex
-        routeId
-        routeShortName
-        routeLongName
-        routeDesc
-        routeColor
-      }
-    }
-  `;
 
   interface RouteVars {
     feedIndex: number;

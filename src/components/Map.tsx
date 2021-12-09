@@ -36,10 +36,10 @@ const Map: FC<Props> = ({ centerCoordinate, zoomLevel, pitch, children }) => {
       <MapboxGL.Camera
         zoomLevel={zoomLevel}
         centerCoordinate={centerCoordinate}
-        ref={cameraRef}
         pitch={pitch}
         animationMode={'flyTo'}
         animationDuration={ANIMATION_DURATION}
+        ref={cameraRef}
       />
       {children}
     </MapboxGL.MapView>
