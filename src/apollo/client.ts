@@ -23,13 +23,16 @@ const client = new ApolloClient({
   cache: new InMemoryCache({
     typePolicies: {
       Stop: {
-        keyFields: Stop => `${Stop.__typename}:${Stop.stopId}`,
+        keyFields: Stop =>
+          `${Stop.__typename}:${Stop.feedIndex}:${Stop.stopId}`,
       },
       Trip: {
-        keyFields: Trip => `${Trip.__typename}:${Trip.tripId}`,
+        keyFields: Trip =>
+          `${Trip.__typename}:${Trip.feedIndex}:${Trip.tripId}`,
       },
       Route: {
-        keyFields: Route => `${Route.__typename}:${Route.routeId}`,
+        keyFields: Route =>
+          `${Route.__typename}:${Route.feedIndex}:${Route.routeId}`,
       },
     },
   }),

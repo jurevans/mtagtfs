@@ -8,8 +8,15 @@ import StopMarker from 'components/StopMarker';
 import Stop from 'components/Stop';
 import { setActiveStop } from 'slices/stops';
 import { GET_SHAPE, GET_TRIP } from 'apollo/queries';
-import { STOP_FIELDS } from 'apollo/fragments';
-import { Coordinate, IShape, IStop, IStopTime, ITrip } from 'interfaces';
+import { ROUTE_FIELDS, STOP_FIELDS } from 'apollo/fragments';
+import {
+  Coordinate,
+  IRoute,
+  IShape,
+  IStop,
+  IStopTime,
+  ITrip,
+} from 'interfaces';
 import styles from './styles';
 
 const DEFAULT_COORD: Coordinate = [-73.94594865587045, 40.7227534777328];
@@ -47,6 +54,7 @@ const MapScreen: FC = () => {
       setTimeout(() => setMarkerVisible(true), ANIMATION_DURATION);
       dispatch(
         setActiveStop({
+          feedIndex: stop.feedIndex,
           stopId: stop.stopId,
         }),
       );
@@ -54,6 +62,7 @@ const MapScreen: FC = () => {
     [dispatch],
   );
 
+  // Retrieve active trip from cache
   const tripInCache = client.readQuery({
     query: GET_TRIP,
     variables: {
@@ -61,13 +70,21 @@ const MapScreen: FC = () => {
       routeId: activeTrip?.routeId,
     },
   });
+  const trip: ITrip = tripInCache?.nextTrip;
 
-  const { nextTrip: trip }: { nextTrip: ITrip } = tripInCache || {};
-
-  const stop = client.readFragment({
-    id: `Stop:${activeStop?.stopId}`,
+  // Retrieve active stop fragment from cache
+  const stop: IStop | null = client.readFragment({
+    id: `Stop:${activeStop?.feedIndex}:${activeStop?.stopId}`,
     fragment: gql`
       ${STOP_FIELDS}
+    `,
+  });
+
+  // Retrieve active route fragment from cache
+  const route: IRoute | null = client.readFragment({
+    id: `Route:${activeTrip?.feedIndex}:${activeTrip?.routeId}`,
+    fragment: gql`
+      ${ROUTE_FIELDS}
     `,
   });
 
@@ -89,13 +106,13 @@ const MapScreen: FC = () => {
           zoomLevel={zoomLevel}
           pitch={pitch}>
           {stop?.geom && isMarkerVisible && <StopMarker stop={stop} />}
-          {data && <TripShape trip={trip} shape={data.shape} />}
+          {data && <TripShape route={route} shape={data.shape} />}
           {trip?.stopTimes &&
             trip?.stopTimes.map((st: IStopTime) => (
               <Stop
                 key={`stop-time-${st.stop.stopId}`}
                 stop={st.stop}
-                color={trip.route.routeColor}
+                color={route?.routeColor}
                 aboveLayerID={`line-layer-${trip.shapeId}`}
                 onPress={onStopPress}
               />

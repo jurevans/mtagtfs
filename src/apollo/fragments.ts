@@ -2,6 +2,7 @@ import { gql } from '@apollo/client';
 
 export const STOP_FIELDS = gql`
   fragment StopFields on Stop {
+    feedIndex
     stopId
     stopName
     geom {
@@ -12,6 +13,8 @@ export const STOP_FIELDS = gql`
 
 export const ROUTE_FIELDS = gql`
   fragment RouteFields on Route {
+    feedIndex
+    routeId
     routeShortName
     routeLongName
     routeDesc

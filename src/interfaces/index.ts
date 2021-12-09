@@ -10,6 +10,7 @@ export interface IRoute {
 }
 
 export interface IStop {
+  feedIndex: number;
   stopId: string;
   stopName: string;
   geom: {

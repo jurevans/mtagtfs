@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface ActiveStop {
+  feedIndex: number;
   stopId: string;
 }
 
