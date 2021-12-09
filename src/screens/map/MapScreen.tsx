@@ -1,21 +1,18 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
-import MapboxGL from '@react-native-mapbox-gl/maps';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { gql, useQuery, useApolloClient } from '@apollo/client';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
-import { IShape, IStop, IStopTime, ITrip } from 'interfaces';
-import styles from './styles';
-import { MAPBOX_ACCESS_TOKEN } from '@env';
+import Map from 'components/Map';
 import TripShape from 'components/TripShape';
 import StopMarker from 'components/StopMarker';
+import { Coordinate, IShape, IStop, IStopTime, ITrip } from 'interfaces';
 import { GET_TRIP } from 'screens/route/RouteScreen';
 import Stop from 'components/Stop';
 import { setActiveStop } from 'slices/stops';
 import { STOP_FIELDS } from 'apollo/fragments';
+import styles from './styles';
 
-MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
-
-const DEFAULT_COORD = [-73.94594865587045, 40.7227534777328];
+const DEFAULT_COORD: Coordinate = [-73.94594865587045, 40.7227534777328];
 const DEFAULT_ZOOM = 11;
 const STOP_ZOOM = 15;
 const ANIMATION_DURATION = 1500;
@@ -38,8 +35,6 @@ const GET_SHAPE = gql`
 `;
 
 const MapScreen: FC = () => {
-  const mapViewRef = useRef<MapboxGL.MapView>(null);
-  const cameraRef = useRef<MapboxGL.Camera>(null);
   const { activeStop } = useAppSelector(state => state.stops);
   const { activeTrip } = useAppSelector(state => state.trips);
   const dispatch = useAppDispatch();
@@ -102,21 +97,10 @@ const MapScreen: FC = () => {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        <MapboxGL.MapView
-          style={styles.map}
-          styleURL={MapboxGL.StyleURL.Dark}
-          pitchEnabled={true}
-          logoEnabled={false}
-          compassEnabled={true}
-          ref={mapViewRef}>
-          <MapboxGL.Camera
-            zoomLevel={zoomLevel}
-            centerCoordinate={centerCoordinate}
-            ref={cameraRef}
-            pitch={pitch}
-            animationMode={'flyTo'}
-            animationDuration={ANIMATION_DURATION}
-          />
+        <Map
+          centerCoordinate={centerCoordinate}
+          zoomLevel={zoomLevel}
+          pitch={pitch}>
           {stop?.geom && isMarkerVisible && <StopMarker stop={stop} />}
           {data && <TripShape trip={trip} shape={data.shape} />}
           {trip?.stopTimes &&
@@ -129,7 +113,7 @@ const MapScreen: FC = () => {
                 onPress={onStopPress}
               />
             ))}
-        </MapboxGL.MapView>
+        </Map>
       </View>
     </View>
   );

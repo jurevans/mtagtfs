@@ -1,4 +1,4 @@
-type Coordinate = [number, number];
+export type Coordinate = [number, number];
 
 export interface IRoute {
   feedIndex: number;
