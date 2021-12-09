@@ -12,4 +12,8 @@ export default StyleSheet.create({
     borderBottomColor: '#aaa',
     borderBottomWidth: 2,
   },
+  error: {
+    fontWeight: 'bold',
+    color: '#cc0000',
+  },
 });

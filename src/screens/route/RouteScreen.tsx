@@ -6,15 +6,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
-import { IRoute, ITrip, IStopTime } from 'interfaces';
+import Loading from 'components/Loading';
+import Error from 'components/Error';
 import { useAppDispatch } from 'store';
 import { setActiveStop } from 'slices/stops';
-import styles from './styles';
 import { setActiveTrip } from 'slices/trips';
-import { STOP_FIELDS } from 'apollo/fragments';
+import { GET_TRIP } from 'apollo/queries';
+import { IRoute, ITrip, IStopTime } from 'interfaces';
+import styles from './styles';
 
 type Props = {
   route: IRoute;
@@ -25,48 +27,16 @@ interface TripVars {
   routeId: string;
 }
 
-export const GET_TRIP = gql`
-  ${STOP_FIELDS}
-  query GetTrip($feedIndex: Int!, $routeId: String!) {
-    nextTrip(feedIndex: $feedIndex, routeId: $routeId) {
-      feedIndex
-      tripId
-      tripHeadsign
-      directionId
-      shapeId
-      routeId
-      route {
-        routeShortName
-        routeLongName
-        routeDesc
-        routeColor
-      }
-      stopTimes {
-        stopSequence
-        departureTime {
-          hours
-          minutes
-          seconds
-        }
-        stop {
-          ...StopFields
-        }
-      }
-    }
-  }
-`;
-
 const RouteScreen: FC<Props> = ({ route }) => {
   const { componentId = '' } = useContext(NavigationContext);
-  const { feedIndex, routeId, routeLongName, routeDesc } = route;
   const dispatch = useAppDispatch();
 
   const { loading, error, data } = useQuery<{ nextTrip: ITrip }, TripVars>(
     GET_TRIP,
     {
       variables: {
-        feedIndex,
-        routeId,
+        feedIndex: route.feedIndex,
+        routeId: route.routeId,
       },
     },
   );
@@ -75,10 +45,11 @@ const RouteScreen: FC<Props> = ({ route }) => {
   const goToStop = useCallback(
     (stopTime: IStopTime) => {
       const { stop } = stopTime;
-      const { stopId } = stop;
+      const { stopId, feedIndex } = stop;
 
       dispatch(
         setActiveStop({
+          feedIndex,
           stopId,
         }),
       );
@@ -127,13 +98,14 @@ const RouteScreen: FC<Props> = ({ route }) => {
     );
   };
 
+  if (loading) return <Loading />;
+  if (error) return <Error message={error.message} styles={styles.error} />;
+
   return (
     <View style={styles.root}>
       <View style={styles.heading}>
-        <Text style={styles.header}>{routeLongName}</Text>
-        <Text style={styles.description}>{routeDesc}</Text>
-        {loading && <Text>Loading stop times...</Text>}
-        {error && <Text style={styles.error}>Error: {error.message}</Text>}
+        <Text style={styles.header}>{route.routeLongName}</Text>
+        <Text style={styles.description}>{route.routeDesc}</Text>
         {data && (
           <Text style={styles.tripHeader}>
             {data.nextTrip.tripHeadsign} -

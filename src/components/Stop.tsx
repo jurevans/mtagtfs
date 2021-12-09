@@ -5,7 +5,7 @@ import * as turf from '@turf/turf';
 
 type Props = {
   stop: IStop;
-  color: string;
+  color?: string;
   aboveLayerID: string;
   onPress: (stop: IStop) => void;
 };

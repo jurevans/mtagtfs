@@ -1,4 +1,4 @@
-type Coordinate = [number, number];
+export type Coordinate = [number, number];
 
 export interface IRoute {
   feedIndex: number;
@@ -10,6 +10,7 @@ export interface IRoute {
 }
 
 export interface IStop {
+  feedIndex: number;
   stopId: string;
   stopName: string;
   geom: {
