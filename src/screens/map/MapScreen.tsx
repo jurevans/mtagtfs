@@ -113,6 +113,7 @@ const MapScreen: FC = () => {
                 key={`stop-time-${st.stop.stopId}`}
                 stop={st.stop}
                 color={route?.routeColor}
+                isActive={st.stop?.stopId === stop?.stopId}
                 aboveLayerID={`line-layer-${trip.shapeId}`}
                 onPress={onStopPress}
               />

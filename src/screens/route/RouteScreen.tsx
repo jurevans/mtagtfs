@@ -98,7 +98,7 @@ const RouteScreen: FC<Props> = ({ route }) => {
     );
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading message="Loading trip..." />;
   if (error) return <Error message={error.message} styles={styles.error} />;
 
   return (

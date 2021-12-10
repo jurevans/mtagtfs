@@ -52,7 +52,7 @@ const DashboardScreen: FC = () => {
     </TouchableOpacity>
   );
 
-  if (loading) return <Loading />;
+  if (loading) return <Loading message="Loading routes..." />;
   if (error) return <Error message={error.message} styles={styles.error} />;
 
   return (

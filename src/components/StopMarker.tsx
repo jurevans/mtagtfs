@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { SvgProps } from 'react-native-svg';
-import Pin from 'assets/pin.svg';
 import { IStop } from 'interfaces';
+import Pin from 'assets/pin.svg';
 
 type Props = {
   stop: IStop;

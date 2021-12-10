@@ -6,20 +6,30 @@ import * as turf from '@turf/turf';
 type Props = {
   stop: IStop;
   color?: string;
+  isActive?: boolean;
   aboveLayerID: string;
   onPress: (stop: IStop) => void;
 };
 
-const getCircleStyles = (color?: string): CircleLayerStyle => ({
-  circleRadius: 6,
-  circleColor: color ? `#${color}` : '#ddd',
+const getCircleStyles = (
+  color: string,
+  isActive: boolean,
+): CircleLayerStyle => ({
+  circleRadius: isActive ? 12 : 6,
+  circleColor: `#${color}`,
   circleStrokeColor: `#ddd`,
   circleStrokeWidth: 2,
   circlePitchScale: 'map',
   circlePitchAlignment: 'map',
 });
 
-const Stop: FC<Props> = ({ stop, color, aboveLayerID, onPress }) => {
+const Stop: FC<Props> = ({
+  stop,
+  color = 'ddd',
+  isActive = false,
+  aboveLayerID,
+  onPress,
+}) => {
   const point = turf.point(stop.geom.coordinates);
 
   return (
@@ -30,7 +40,7 @@ const Stop: FC<Props> = ({ stop, color, aboveLayerID, onPress }) => {
       onPress={() => onPress(stop)}>
       <MapboxGL.CircleLayer
         id={`circle-layer-${stop.stopId}`}
-        style={getCircleStyles(color)}
+        style={getCircleStyles(color, isActive)}
         minZoomLevel={12}
         aboveLayerID={aboveLayerID}
       />
