@@ -5,6 +5,7 @@
 - [Set-up](#set-up)
   - [MapBox](#mapbox)
   - [API Gateway](#api-gateway)
+  - [Running Metro](#running-metro)
 - [Notes](#notes)
 
 ## About
@@ -30,6 +31,7 @@ GTFS_API_GATEWAY_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
 ### MapBox
+
 This app uses MapBox, and will need a valid key to load the map. You will need to create an account with [MapBox](https://www.mapbox.com/) to obtain a `MAPBOX_ACCESS_TOKEN` to set in this file.
 
 You will also need to add a "downloads API" token to the `/android/gradle.properties`, like so:
@@ -40,7 +42,29 @@ MAPBOX_DOWNLOADS_TOKEN=XXXXXXXXXXXXXXXXXX
 ```
 
 ### API Gateway
-The `GTFS_API_GATEWAY_URL` and `GTFS_API_GATEWAY_KEY` must be valid to access the GraphQL API. Presently, only the [gtfs-graphql-api](https://github.com/jurevans/gtfs-graphql-api/) and [gtfs-realtime-graphql-api](https://github.com/jurevans/gtfs-realtime-graphql-api/) APIs are in place, but an API Gateway merging these schemas is being developed that will serve this app.
+
+The `GTFS_API_GATEWAY_URL` and `GTFS_API_GATEWAY_KEY` must be valid to access the GraphQL API. Presently, only the [gtfs-graphql-api](https://github.com/jurevans/gtfs-graphql-api/) and [gtfs-realtime-graphql-api](https://github.com/jurevans/gtfs-realtime-graphql-api/) APIs are in place, but an API gateway merging these schemas is being developed that will serve this app.
+
+### Running Metro
+
+This project requires the `react-native-cli`. Starting up Metro and launching the emulator is straightforward, assuming that your environment has been configured according to the [React Native environment setup docs](https://reactnative.dev/docs/environment-setup):
+
+```bash
+# Start metro (in a separate terminal)
+npm start
+# OR
+npx react-native start
+
+# Launch app on Android
+npm run android
+# OR
+npx react-native run-android
+
+# Launch on iOS
+npm run ios
+# OR
+npx react-native run-ios
+```
 
 [ [Table of Contents](#table-of-contents) ]
 
@@ -51,6 +75,7 @@ Read more about the frameworks and libraries this app utilizes at the links belo
 - [React-Native](https://reactnative.dev/)
 - [React Native Navigation](https://wix.github.io/react-native-navigation/docs/before-you-start/)
 - [React Native Navigation Hooks](https://underscopeio.github.io/react-native-navigation-hooks/docs/before-you-start/)
+- [TypeScript](https://www.typescriptlang.org/)
 - [MapBox](https://www.mapbox.com/)
 - [ApolloClient](https://www.apollographql.com/docs/react/)
 - [Redux Toolkit](https://redux-toolkit.js.org/)
