@@ -42,7 +42,7 @@ const MapScreen: FC = () => {
   });
 
   const { zoomLevel, centerCoordinate, pitch } = cameraState;
-  const { data } = useQuery<{ shape: IShape }, ShapeVars>(GET_SHAPE, {
+  const { loading, data } = useQuery<{ shape: IShape }, ShapeVars>(GET_SHAPE, {
     variables: {
       shapeId: activeTrip?.shapeId || '',
     },
@@ -106,15 +106,22 @@ const MapScreen: FC = () => {
           zoomLevel={zoomLevel}
           pitch={pitch}>
           {stop?.geom && isMarkerVisible && <StopMarker stop={stop} />}
-          {data && <TripShape route={route} shape={data.shape} />}
+          {!loading && (data || trip?.stopTimes) && (
+            <TripShape
+              layerId={`line-layer-${trip.shapeId || trip.tripId}`}
+              trip={trip}
+              route={route}
+              shape={data?.shape}
+            />
+          )}
           {trip?.stopTimes &&
             trip?.stopTimes.map((st: IStopTime) => (
               <Stop
-                key={`stop-time-${st.stop.stopId}`}
+                key={st.stop.stopId}
                 stop={st.stop}
                 color={route?.routeColor}
                 isActive={st.stop?.stopId === stop?.stopId}
-                aboveLayerID={`line-layer-${trip.shapeId}`}
+                aboveLayerId={`line-layer-${trip.shapeId || trip.tripId}`}
                 onPress={onStopPress}
               />
             ))}

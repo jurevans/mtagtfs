@@ -7,7 +7,7 @@ type Props = {
   stop: IStop;
   color?: string;
   isActive?: boolean;
-  aboveLayerID: string;
+  aboveLayerId: string;
   onPress: (stop: IStop) => void;
 };
 
@@ -27,22 +27,22 @@ const Stop: FC<Props> = ({
   stop,
   color = 'ddd',
   isActive = false,
-  aboveLayerID,
+  aboveLayerId,
   onPress,
 }) => {
   const point = turf.point(stop.geom.coordinates);
 
   return (
     <MapboxGL.ShapeSource
-      id={`shape-source-${stop.stopId}`}
+      id={`shape-source-${stop.feedIndex}:${stop.stopId}`}
       key={`${stop.stopId}`}
       shape={point}
       onPress={() => onPress(stop)}>
       <MapboxGL.CircleLayer
-        id={`circle-layer-${stop.stopId}`}
+        id={`circle-layer-${stop.feedIndex}:${stop.stopId}`}
         style={getCircleStyles(color, isActive)}
         minZoomLevel={12}
-        aboveLayerID={aboveLayerID}
+        aboveLayerID={aboveLayerId}
       />
     </MapboxGL.ShapeSource>
   );
