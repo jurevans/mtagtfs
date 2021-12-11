@@ -1,14 +1,16 @@
 import React, { FC } from 'react';
 import MapboxGL, { CircleLayerStyle } from '@react-native-mapbox-gl/maps';
-import { IStop } from 'interfaces';
 import * as turf from '@turf/turf';
+import { Coordinate } from 'interfaces';
 
 type Props = {
-  stop: IStop;
+  feedIndex: number;
+  stopId: string;
+  coordinates: Coordinate;
   color?: string;
   isActive?: boolean;
   aboveLayerId: string;
-  onPress: (stop: IStop) => void;
+  onPress: (feedIndex: number, stopId: string) => void;
 };
 
 const getCircleStyles = (
@@ -24,22 +26,24 @@ const getCircleStyles = (
 });
 
 const Stop: FC<Props> = ({
-  stop,
+  feedIndex,
+  stopId,
+  coordinates,
   color = 'ddd',
   isActive = false,
   aboveLayerId,
   onPress,
 }) => {
-  const point = turf.point(stop.geom.coordinates);
+  const point = turf.point(coordinates);
 
   return (
     <MapboxGL.ShapeSource
-      id={`shape-source-${stop.feedIndex}:${stop.stopId}`}
-      key={`${stop.stopId}`}
+      id={`shape-source-${feedIndex}:${stopId}`}
+      key={`${stopId}`}
       shape={point}
-      onPress={() => onPress(stop)}>
+      onPress={() => onPress(feedIndex, stopId)}>
       <MapboxGL.CircleLayer
-        id={`circle-layer-${stop.feedIndex}:${stop.stopId}`}
+        id={`circle-layer-${feedIndex}:${stopId}`}
         style={getCircleStyles(color, isActive)}
         minZoomLevel={12}
         aboveLayerID={aboveLayerId}

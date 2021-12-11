@@ -7,7 +7,7 @@ type Props = {
   shapeSourceId: string;
   layerId: string;
   color?: string;
-  coordinates: Coordinate[];
+  coordinates?: Coordinate[];
 };
 
 const getLineStyles = (color?: string) => ({
@@ -20,7 +20,7 @@ const TripShape: FC<Props> = ({
   shapeSourceId,
   layerId,
   color,
-  coordinates,
+  coordinates = [],
 }) => {
   const lineString = turf.lineString(coordinates);
 

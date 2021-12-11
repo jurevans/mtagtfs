@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface ActiveTrip {
+export interface IActiveTrip {
   feedIndex: number;
   tripId: string;
   shapeId: string;
@@ -8,7 +8,7 @@ export interface ActiveTrip {
 }
 
 interface InitialState {
-  activeTrip: ActiveTrip | null;
+  activeTrip: IActiveTrip | null;
 }
 
 const initialState: InitialState = {
@@ -19,7 +19,7 @@ const TripSlice = createSlice({
   name: 'trip',
   initialState,
   reducers: {
-    setActiveTrip: (state, action: PayloadAction<ActiveTrip>) => {
+    setActiveTrip: (state, action: PayloadAction<IActiveTrip>) => {
       state.activeTrip = action.payload;
     },
   },

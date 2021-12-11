@@ -49,13 +49,13 @@ const MapScreen: FC = () => {
   });
 
   const onStopPress = useCallback(
-    (stop: IStop) => {
+    (feedIndex: number, stopId: string) => {
       setMarkerVisible(false);
       setTimeout(() => setMarkerVisible(true), ANIMATION_DURATION);
       dispatch(
         setActiveStop({
-          feedIndex: stop.feedIndex,
-          stopId: stop.stopId,
+          feedIndex: feedIndex,
+          stopId: stopId,
         }),
       );
     },
@@ -63,14 +63,14 @@ const MapScreen: FC = () => {
   );
 
   // Retrieve active trip from cache
-  const tripInCache = client.readQuery({
+  const tripInCache = client.readQuery<{ nextTrip: ITrip }>({
     query: GET_TRIP,
     variables: {
       feedIndex: activeTrip?.feedIndex,
       routeId: activeTrip?.routeId,
     },
   });
-  const trip: ITrip = tripInCache?.nextTrip;
+  const trip: ITrip | undefined = tripInCache?.nextTrip;
 
   // Retrieve active stop fragment from cache
   const stop: IStop | null = client.readFragment({
@@ -107,15 +107,21 @@ const MapScreen: FC = () => {
           centerCoordinate={centerCoordinate}
           zoomLevel={zoomLevel}
           pitch={pitch}>
-          {stop?.geom && isMarkerVisible && <StopMarker stop={stop} />}
+          {stop?.geom && isMarkerVisible && (
+            <StopMarker
+              feedIndex={stop.feedIndex}
+              stopId={stop.stopId}
+              coordinates={stop.geom.coordinates}
+            />
+          )}
           {!loading && (data || trip?.stopTimes) && (
             <TripShape
-              shapeSourceId={`shape-source-${trip.feedIndex}:${trip.tripId}`}
+              shapeSourceId={`shape-source-${trip?.feedIndex}:${trip?.tripId}`}
               layerId={shapeLayerId}
               color={route?.routeColor}
               coordinates={
                 data?.shape.geom.coordinates ||
-                trip.stopTimes.map(st => st.stop.geom.coordinates)
+                trip?.stopTimes.map(st => st.stop.geom.coordinates)
               }
             />
           )}
@@ -123,7 +129,9 @@ const MapScreen: FC = () => {
             trip?.stopTimes.map((st: IStopTime) => (
               <Stop
                 key={st.stop.stopId}
-                stop={st.stop}
+                feedIndex={st.stop.feedIndex}
+                stopId={st.stop.stopId}
+                coordinates={st.stop.geom.coordinates}
                 color={route?.routeColor}
                 isActive={st.stop?.stopId === stop?.stopId}
                 aboveLayerId={shapeLayerId}

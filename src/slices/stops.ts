@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface ActiveStop {
+export interface IActiveStop {
   feedIndex: number;
   stopId: string;
 }
 
 interface InitialState {
-  activeStop: ActiveStop | null;
+  activeStop: IActiveStop | null;
 }
 
 const initialState: InitialState = {
@@ -17,7 +17,7 @@ const stopSlice = createSlice({
   name: 'stop',
   initialState,
   reducers: {
-    setActiveStop: (state, action: PayloadAction<ActiveStop>) => {
+    setActiveStop: (state, action: PayloadAction<IActiveStop>) => {
       state.activeStop = action.payload;
     },
   },

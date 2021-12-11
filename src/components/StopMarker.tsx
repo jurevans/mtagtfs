@@ -1,11 +1,13 @@
 import React, { FC } from 'react';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { SvgProps } from 'react-native-svg';
-import { IStop } from 'interfaces';
+import { Coordinate } from 'interfaces';
 import Pin from 'assets/pin.svg';
 
 type Props = {
-  stop: IStop;
+  feedIndex: number;
+  stopId: string;
+  coordinates: Coordinate;
 };
 
 const svgProps: SvgProps = {
@@ -14,9 +16,11 @@ const svgProps: SvgProps = {
   fill: '#cc0000',
 };
 
-const StopMarker: FC<Props> = ({ stop }) => (
-  <MapboxGL.MarkerView id={stop.stopId} coordinate={stop.geom.coordinates}>
-    <Pin nativeID={stop.stopId} {...svgProps} />
+const StopMarker: FC<Props> = ({ feedIndex, stopId, coordinates }) => (
+  <MapboxGL.MarkerView
+    id={`marker-${feedIndex}:${stopId}`}
+    coordinate={coordinates}>
+    <Pin nativeID={stopId} {...svgProps} />
   </MapboxGL.MarkerView>
 );
 
