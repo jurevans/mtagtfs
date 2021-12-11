@@ -18,7 +18,7 @@ const getCircleStyles = (
   isActive: boolean,
 ): CircleLayerStyle => ({
   circleRadius: isActive ? 12 : 6,
-  circleColor: `#${color}`,
+  circleColor: `#${color || 'ddd'}`,
   circleStrokeColor: `#ddd`,
   circleStrokeWidth: 2,
   circlePitchScale: 'map',
