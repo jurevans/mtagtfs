@@ -1,4 +1,4 @@
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import {
   FlatList,
   ListRenderItemInfo,
@@ -6,61 +6,45 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  NavigationContext,
-  useNavigation,
-} from 'react-native-navigation-hooks';
+import { useNavigation } from 'react-native-navigation-hooks';
 import { useQuery } from '@apollo/client';
-import { GET_ROUTES } from 'apollo/queries';
-import { Screens } from 'navigation/screens';
-import { IRoute } from 'interfaces';
-import styles from './styles';
-import Error from 'components/Error';
+import { GET_FEEDS } from 'apollo/queries';
 import Loading from 'components/Loading';
+import Error from 'components/Error';
+import { Screens } from 'navigation/screens';
+import { IFeed } from 'interfaces';
+import config from 'config';
+import styles from './styles';
 
 const DashboardScreen: FC = () => {
-  const { componentId } = useContext(NavigationContext);
   const { push } = useNavigation();
-  console.log({ componentId });
 
-  interface RouteVars {
-    feedIndex: number;
-  }
+  const { loading, error, data } = useQuery<{ feeds: IFeed[] }>(GET_FEEDS);
 
-  const { loading, error, data } = useQuery<{ routes: IRoute[] }, RouteVars>(
-    GET_ROUTES,
-    {
-      variables: {
-        feedIndex: 1,
-      },
-    },
-  );
+  if (loading) <Loading message="Loading feeds" />;
+  if (error) <Error message={error.message} />;
 
-  const renderItem = ({ item }: ListRenderItemInfo<IRoute>) => (
+  const { feeds } = data || {};
+
+  const renderItem = ({ item }: ListRenderItemInfo<IFeed>) => (
     <TouchableOpacity
-      style={{
-        ...styles.button,
-        backgroundColor: `#${item.routeColor}`,
-      }}
+      style={styles.button}
       onPress={() => {
-        push(Screens.ROUTE_SCREEN, { route: item });
+        push(Screens.ROUTES_SCREEN, { feedIndex: item.feedIndex });
       }}>
-      {/* eslint-disable-next-line react-native/no-inline-styles */}
-      <Text style={{ color: item.routeColor ? '#fff' : '#888' }}>
-        {item.routeShortName} - {item.routeLongName}
-      </Text>
+      <Text>{item.feedPublisherName || config.feeds[item.feedIndex]}</Text>
     </TouchableOpacity>
   );
 
-  if (loading) return <Loading message="Loading routes..." />;
-  if (error) return <Error message={error.message} styles={styles.error} />;
-
   return (
     <View style={styles.root}>
+      <View style={styles.heading}>
+        <Text style={styles.header}>Dashboard</Text>
+      </View>
       <FlatList
-        data={data?.routes}
+        data={feeds}
         renderItem={renderItem}
-        keyExtractor={(route: IRoute) => `${route.feedIndex}${route.routeId}`}
+        keyExtractor={(feed: IFeed) => `feed-${feed.feedIndex}`}
       />
     </View>
   );

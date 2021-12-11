@@ -27,7 +27,7 @@ interface TripVars {
   routeId: string;
 }
 
-const RouteScreen: FC<Props> = ({ route }) => {
+const TripScreen: FC<Props> = ({ route }) => {
   const { componentId = '' } = useContext(NavigationContext);
   const dispatch = useAppDispatch();
 
@@ -118,4 +118,4 @@ const RouteScreen: FC<Props> = ({ route }) => {
   );
 };
 
-export default RouteScreen;
+export default TripScreen;

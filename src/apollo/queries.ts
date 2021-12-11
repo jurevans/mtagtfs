@@ -1,6 +1,15 @@
 import { gql } from '@apollo/client';
 import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from './fragments';
 
+export const GET_FEEDS = gql`
+  query GetFeeds {
+    feeds {
+      feedIndex
+      feedPublisherName
+    }
+  }
+`;
+
 export const GET_TRIP = gql`
   ${TRIP_FIELDS}
   ${STOP_FIELDS}

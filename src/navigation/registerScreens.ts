@@ -3,11 +3,12 @@ import { Screens } from './screens';
 import { withProviders } from './providers';
 import {
   DashboardScreen,
+  RoutesScreen,
   FavoritesScreen,
   LinesScreen,
   MapScreen,
   SettingsScreen,
-  RouteScreen,
+  TripScreen,
 } from 'screens';
 import store from 'store';
 import client from 'apollo/client';
@@ -17,6 +18,11 @@ export default function () {
     Screens.DASHBOARD_SCREEN,
     () => withProviders(DashboardScreen, store, client),
     () => DashboardScreen,
+  );
+  Navigation.registerComponent(
+    Screens.ROUTES_SCREEN,
+    () => withProviders(RoutesScreen, store, client),
+    () => RoutesScreen,
   );
   Navigation.registerComponent(
     Screens.MAP_SCREEN,
@@ -39,8 +45,8 @@ export default function () {
     () => SettingsScreen,
   );
   Navigation.registerComponent(
-    Screens.ROUTE_SCREEN,
-    () => withProviders(RouteScreen, store, client),
-    () => RouteScreen,
+    Screens.TRIP_SCREEN,
+    () => withProviders(TripScreen, store, client),
+    () => TripScreen,
   );
 }

@@ -7,6 +7,12 @@ export interface IRoute {
   routeLongName: string;
   routeDesc: string;
   routeColor: string;
+  routeUrl: string;
+}
+
+export interface IFeed {
+  feedIndex: number;
+  feedPublisherName: string;
 }
 
 export interface IStop {
