@@ -98,6 +98,8 @@ const MapScreen: FC = () => {
     }
   }, [stop]);
 
+  const shapeLayerId = `line-layer-${trip?.feedIndex}:${trip?.tripId}`;
+
   return (
     <View style={styles.page}>
       <View style={styles.container}>
@@ -108,10 +110,13 @@ const MapScreen: FC = () => {
           {stop?.geom && isMarkerVisible && <StopMarker stop={stop} />}
           {!loading && (data || trip?.stopTimes) && (
             <TripShape
-              layerId={`line-layer-${trip.shapeId || trip.tripId}`}
-              trip={trip}
-              route={route}
-              shape={data?.shape}
+              shapeSourceId={`shape-source-${trip.feedIndex}:${trip.tripId}`}
+              layerId={shapeLayerId}
+              color={route?.routeColor}
+              coordinates={
+                data?.shape.geom.coordinates ||
+                trip.stopTimes.map(st => st.stop.geom.coordinates)
+              }
             />
           )}
           {trip?.stopTimes &&
@@ -121,7 +126,7 @@ const MapScreen: FC = () => {
                 stop={st.stop}
                 color={route?.routeColor}
                 isActive={st.stop?.stopId === stop?.stopId}
-                aboveLayerId={`line-layer-${trip.shapeId || trip.tripId}`}
+                aboveLayerId={shapeLayerId}
                 onPress={onStopPress}
               />
             ))}
