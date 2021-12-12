@@ -9,13 +9,14 @@ import {
 import { useQuery } from '@apollo/client';
 import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
-import Loading from 'components/Loading';
-import Error from 'components/Error';
 import { useAppDispatch } from 'store';
 import { setActiveStop } from 'slices/stops';
 import { setActiveTrip } from 'slices/trips';
 import { GET_TRIP } from 'apollo/queries';
+import Loading from 'components/Loading';
+import Error from 'components/Error';
 import { IRoute, ITrip, IStopTime } from 'interfaces';
+import { getTimeFromInterval } from 'util/';
 import styles from './styles';
 
 type Props = {
@@ -76,17 +77,18 @@ const TripScreen: FC<Props> = ({ route }) => {
     }
   }, [nextTrip, dispatch]);
 
-  const renderItem = ({ item }: ListRenderItemInfo<IStopTime>) => (
-    <TouchableOpacity style={styles.button} onPress={() => goToStop(item)}>
-      <Text>
-        {item.stopSequence} - {item.stop.stopId} - {item.stop.stopName}
-      </Text>
-      <Text>
-        Departs at: {item.departureTime.hours}:{item.departureTime.minutes}:
-        {item.departureTime.seconds ? item.departureTime.seconds : '00'}
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderItem = ({ item }: ListRenderItemInfo<IStopTime>) => {
+    const time = getTimeFromInterval(item.departureTime);
+
+    return (
+      <TouchableOpacity style={styles.button} onPress={() => goToStop(item)}>
+        <Text>
+          {item.stopSequence} - {item.stop.stopId} - {item.stop.stopName}
+        </Text>
+        <Text>Departs at: {time}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const renderTrip = (trip: ITrip): React.ReactElement => {
     return (

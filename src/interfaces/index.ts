@@ -53,3 +53,9 @@ export interface IShape {
     coordinates: Coordinate[];
   };
 }
+
+export interface IInterval {
+  hours: number;
+  minutes: number;
+  seconds: number;
+}

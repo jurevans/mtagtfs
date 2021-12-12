@@ -17,12 +17,20 @@ const getCircleStyles = (
   color: string,
   isActive: boolean,
 ): CircleLayerStyle => ({
-  circleRadius: isActive ? 12 : 6,
-  circleColor: `#${color || 'ddd'}`,
+  circleRadius: isActive ? 16 : 6,
+  circleColor: `#${isActive ? 'ddd' : color || 'ddd'}`,
   circleStrokeColor: `#ddd`,
   circleStrokeWidth: 2,
   circlePitchScale: 'map',
   circlePitchAlignment: 'map',
+  circleColorTransition: {
+    duration: 4000,
+    delay: 4000,
+  },
+  circleRadiusTransition: {
+    duration: 500,
+    delay: 500,
+  },
 });
 
 const Stop: FC<Props> = ({
