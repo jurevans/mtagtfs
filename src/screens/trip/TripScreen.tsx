@@ -1,11 +1,5 @@
 import React, { FC, useCallback, useContext, useEffect } from 'react';
-import {
-  FlatList,
-  ListRenderItemInfo,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { Text, View } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
@@ -15,8 +9,9 @@ import { setActiveTrip } from 'slices/trips';
 import { GET_TRIP } from 'apollo/queries';
 import Loading from 'components/Loading';
 import Error from 'components/Error';
-import { IRoute, ITrip, IStopTime } from 'interfaces';
-import { getTimeFromInterval } from 'util/';
+import Trip from 'components/Trip';
+import { StopTimeCallback } from 'components/StopTime';
+import { IRoute, ITrip } from 'interfaces';
 import styles from './styles';
 
 type Props = {
@@ -43,11 +38,8 @@ const TripScreen: FC<Props> = ({ route }) => {
   );
   const { nextTrip } = data || {};
 
-  const goToStop = useCallback(
-    (stopTime: IStopTime) => {
-      const { stop } = stopTime;
-      const { stopId, feedIndex } = stop;
-
+  const goToStop = useCallback<StopTimeCallback>(
+    ({ stopId, feedIndex }) => {
       dispatch(
         setActiveStop({
           feedIndex,
@@ -77,29 +69,6 @@ const TripScreen: FC<Props> = ({ route }) => {
     }
   }, [nextTrip, dispatch]);
 
-  const renderItem = ({ item }: ListRenderItemInfo<IStopTime>) => {
-    const time = getTimeFromInterval(item.departureTime);
-
-    return (
-      <TouchableOpacity style={styles.button} onPress={() => goToStop(item)}>
-        <Text>
-          {item.stopSequence} - {item.stop.stopId} - {item.stop.stopName}
-        </Text>
-        <Text>Departs at: {time}</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  const renderTrip = (trip: ITrip): React.ReactElement => {
-    return (
-      <FlatList
-        data={trip.stopTimes}
-        renderItem={renderItem}
-        keyExtractor={(stopTime: IStopTime) => stopTime.stop.stopId}
-      />
-    );
-  };
-
   if (loading) return <Loading message="Loading trip..." />;
   if (error) return <Error message={error.message} styles={styles.error} />;
 
@@ -115,7 +84,17 @@ const TripScreen: FC<Props> = ({ route }) => {
           </Text>
         )}
       </View>
-      {data && renderTrip(data.nextTrip)}
+      {data && (
+        <Trip
+          stopTimes={data.nextTrip.stopTimes}
+          styles={{
+            button: styles.button,
+            label: { fontWeight: 'bold', fontSize: 16 },
+            departure: { color: '#999' },
+          }}
+          onPress={goToStop}
+        />
+      )}
     </View>
   );
 };
