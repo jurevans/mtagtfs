@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface IActiveStop {
   feedIndex: number;
+  tripId: string;
   stopId: string;
 }
 

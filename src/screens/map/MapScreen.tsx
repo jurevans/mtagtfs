@@ -7,8 +7,8 @@ import TripShape from 'components/TripShape';
 import StopMarker from 'components/StopMarker';
 import Stop from 'components/Stop';
 import { setActiveStop } from 'slices/stops';
-import { GET_SHAPE, GET_TRIP } from 'apollo/queries';
-import { ROUTE_FIELDS, STOP_FIELDS } from 'apollo/fragments';
+import { GET_SHAPE } from 'apollo/queries';
+import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
 import {
   Coordinate,
   IRoute,
@@ -18,6 +18,7 @@ import {
   ITrip,
 } from 'interfaces';
 import styles from './styles';
+import { StopTimeCallback } from 'components/StopTime';
 
 const DEFAULT_COORD: Coordinate = [-73.94594865587045, 40.7227534777328];
 const DEFAULT_ZOOM = 11;
@@ -30,7 +31,6 @@ interface ShapeVars {
 
 const MapScreen: FC = () => {
   const { activeStop } = useAppSelector(state => state.stops);
-  const { activeTrip } = useAppSelector(state => state.trips);
   const dispatch = useAppDispatch();
   const client = useApolloClient();
 
@@ -42,35 +42,21 @@ const MapScreen: FC = () => {
   });
 
   const { zoomLevel, centerCoordinate, pitch } = cameraState;
+
+  // Retrieve trip fragment from cache
+  const trip: ITrip | null = client.readFragment({
+    id: `Trip:${activeStop?.feedIndex}:${activeStop?.tripId}`,
+    fragment: gql`
+      ${TRIP_FIELDS}
+    `,
+  });
+
+  // Query shape geometries
   const { loading, data } = useQuery<{ shape: IShape }, ShapeVars>(GET_SHAPE, {
     variables: {
-      shapeId: activeTrip?.shapeId || '',
+      shapeId: trip?.shapeId || '',
     },
   });
-
-  const onStopPress = useCallback(
-    (feedIndex: number, stopId: string) => {
-      setMarkerVisible(false);
-      setTimeout(() => setMarkerVisible(true), ANIMATION_DURATION);
-      dispatch(
-        setActiveStop({
-          feedIndex: feedIndex,
-          stopId: stopId,
-        }),
-      );
-    },
-    [dispatch],
-  );
-
-  // Retrieve active trip from cache
-  const tripInCache = client.readQuery<{ nextTrip: ITrip }>({
-    query: GET_TRIP,
-    variables: {
-      feedIndex: activeTrip?.feedIndex,
-      routeId: activeTrip?.routeId,
-    },
-  });
-  const trip: ITrip | undefined = tripInCache?.nextTrip;
 
   // Retrieve active stop fragment from cache
   const stop: IStop | null = client.readFragment({
@@ -80,13 +66,28 @@ const MapScreen: FC = () => {
     `,
   });
 
-  // Retrieve active route fragment from cache
+  // Retrieve route fragment from cache
   const route: IRoute | null = client.readFragment({
-    id: `Route:${activeTrip?.feedIndex}:${activeTrip?.routeId}`,
+    id: `Route:${activeStop?.feedIndex}:${trip?.routeId}`,
     fragment: gql`
       ${ROUTE_FIELDS}
     `,
   });
+
+  const onStopPress = useCallback<StopTimeCallback>(
+    ({ stopId, tripId, feedIndex }) => {
+      setMarkerVisible(false);
+      setTimeout(() => setMarkerVisible(true), ANIMATION_DURATION);
+      dispatch(
+        setActiveStop({
+          feedIndex: feedIndex,
+          tripId: tripId,
+          stopId: stopId,
+        }),
+      );
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     if (stop) {
@@ -129,8 +130,9 @@ const MapScreen: FC = () => {
             trip?.stopTimes.map((st: IStopTime) => (
               <Stop
                 key={st.stop.stopId}
-                feedIndex={st.stop.feedIndex}
+                feedIndex={trip.feedIndex}
                 stopId={st.stop.stopId}
+                tripId={trip.tripId}
                 coordinates={st.stop.geom.coordinates}
                 color={route?.routeColor}
                 isActive={st.stop?.stopId === stop?.stopId}

@@ -2,15 +2,17 @@ import React, { FC } from 'react';
 import MapboxGL, { CircleLayerStyle } from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
 import { Coordinate } from 'interfaces';
+import { StopTimeCallback } from './StopTime';
 
 type Props = {
   feedIndex: number;
+  tripId: string;
   stopId: string;
   coordinates: Coordinate;
   color?: string;
   isActive?: boolean;
   aboveLayerId: string;
-  onPress: (feedIndex: number, stopId: string) => void;
+  onPress: StopTimeCallback;
 };
 
 const getCircleStyles = (
@@ -35,6 +37,7 @@ const getCircleStyles = (
 
 const Stop: FC<Props> = ({
   feedIndex,
+  tripId,
   stopId,
   coordinates,
   color = 'ddd',
@@ -43,13 +46,12 @@ const Stop: FC<Props> = ({
   onPress,
 }) => {
   const point = turf.point(coordinates);
-
   return (
     <MapboxGL.ShapeSource
       id={`shape-source-${feedIndex}:${stopId}`}
       key={`${stopId}`}
       shape={point}
-      onPress={() => onPress(feedIndex, stopId)}>
+      onPress={() => onPress({ feedIndex, tripId, stopId })}>
       <MapboxGL.CircleLayer
         id={`circle-layer-${feedIndex}:${stopId}`}
         style={getCircleStyles(color, isActive)}

@@ -11,6 +11,7 @@ import { getTimeFromInterval } from 'util/';
 
 export type StopTimeCallback = (args: {
   feedIndex: number;
+  tripId: string;
   stopId: string;
 }) => void;
 
@@ -22,6 +23,7 @@ export interface IStopTimeStyles {
 
 type Props = {
   feedIndex: number;
+  tripId: string;
   stopId: string;
   stopName: string;
   departureTime: IInterval;
@@ -33,6 +35,7 @@ type Props = {
 
 const StopTime: FC<Props> = ({
   feedIndex,
+  tripId,
   stopId,
   stopName,
   departureTime,
@@ -42,11 +45,10 @@ const StopTime: FC<Props> = ({
   onPress,
 }) => {
   const time = getTimeFromInterval(departureTime);
-
   return (
     <TouchableOpacity
       style={buttonStyles}
-      onPress={() => onPress({ feedIndex, stopId })}>
+      onPress={() => onPress({ feedIndex, stopId, tripId })}>
       <Text style={labelStyles}>{stopName}</Text>
       <Text style={departureStyles}>Departs at: {time}</Text>
     </TouchableOpacity>

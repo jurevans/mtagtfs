@@ -1,11 +1,10 @@
-import React, { FC, useCallback, useContext, useEffect } from 'react';
+import React, { FC, useCallback, useContext } from 'react';
 import { Text, View } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
 import { useAppDispatch } from 'store';
 import { setActiveStop } from 'slices/stops';
-import { setActiveTrip } from 'slices/trips';
 import { GET_TRIP } from 'apollo/queries';
 import Loading from 'components/Loading';
 import Error from 'components/Error';
@@ -21,6 +20,7 @@ type Props = {
 interface TripVars {
   feedIndex: number;
   routeId: string;
+  directionId: number;
 }
 
 const TripScreen: FC<Props> = ({ route }) => {
@@ -33,16 +33,18 @@ const TripScreen: FC<Props> = ({ route }) => {
       variables: {
         feedIndex: route.feedIndex,
         routeId: route.routeId,
+        directionId: 1,
       },
     },
   );
   const { nextTrip } = data || {};
 
   const goToStop = useCallback<StopTimeCallback>(
-    ({ stopId, feedIndex }) => {
+    ({ stopId, tripId, feedIndex }) => {
       dispatch(
         setActiveStop({
           feedIndex,
+          tripId,
           stopId,
         }),
       );
@@ -56,19 +58,6 @@ const TripScreen: FC<Props> = ({ route }) => {
     [componentId, dispatch],
   );
 
-  useEffect(() => {
-    if (nextTrip) {
-      dispatch(
-        setActiveTrip({
-          feedIndex: nextTrip.feedIndex,
-          tripId: nextTrip.tripId,
-          shapeId: nextTrip.shapeId,
-          routeId: nextTrip.routeId,
-        }),
-      );
-    }
-  }, [nextTrip, dispatch]);
-
   if (loading) return <Loading message="Loading trip..." />;
   if (error) return <Error message={error.message} styles={styles.error} />;
 
@@ -77,23 +66,24 @@ const TripScreen: FC<Props> = ({ route }) => {
       <View style={styles.heading}>
         <Text style={styles.header}>{route.routeLongName}</Text>
         <Text style={styles.description}>{route.routeDesc}</Text>
-        {data && (
+      </View>
+      {data && (
+        <View>
           <Text style={styles.tripHeader}>
             {data.nextTrip.tripHeadsign} -
             {data.nextTrip.directionId ? 'Inbound' : 'Outbound'}
           </Text>
-        )}
-      </View>
-      {data && (
-        <Trip
-          stopTimes={data.nextTrip.stopTimes}
-          styles={{
-            button: styles.button,
-            label: { fontWeight: 'bold', fontSize: 16 },
-            departure: { color: '#999' },
-          }}
-          onPress={goToStop}
-        />
+          <Trip
+            tripId={nextTrip?.tripId || ''}
+            stopTimes={data.nextTrip.stopTimes}
+            styles={{
+              button: styles.button,
+              label: { fontWeight: 'bold', fontSize: 16 },
+              departure: { color: '#999' },
+            }}
+            onPress={goToStop}
+          />
+        </View>
       )}
     </View>
   );

@@ -25,6 +25,7 @@ export interface IStop {
 }
 
 export interface IStopTime {
+  tripId: string;
   stopSequence: number;
   departureTime: {
     hours: number;

@@ -31,5 +31,19 @@ export const TRIP_FIELDS = gql`
     directionId
     shapeId
     routeId
+    stopTimes {
+      departureTime {
+        hours
+        minutes
+        seconds
+      }
+      stop {
+        stopId
+        stopName
+        geom {
+          coordinates
+        }
+      }
+    }
   }
 `;
