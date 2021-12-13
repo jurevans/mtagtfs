@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
-import { IInterval } from 'interfaces';
-import { getTimeFromInterval } from 'util/';
 
 export type StopTimeCallback = (args: {
   feedIndex: number;
@@ -26,7 +24,7 @@ type Props = {
   tripId: string;
   stopId: string;
   stopName: string;
-  departureTime: IInterval;
+  departure: string;
   buttonStyles?: StyleProp<ViewStyle>;
   labelStyles?: StyleProp<TextStyle>;
   departureStyles?: StyleProp<TextStyle>;
@@ -38,19 +36,18 @@ const StopTime: FC<Props> = ({
   tripId,
   stopId,
   stopName,
-  departureTime,
+  departure,
   buttonStyles = {},
   labelStyles = {},
   departureStyles = {},
   onPress,
 }) => {
-  const time = getTimeFromInterval(departureTime);
   return (
     <TouchableOpacity
       style={buttonStyles}
       onPress={() => onPress({ feedIndex, stopId, tripId })}>
       <Text style={labelStyles}>{stopName}</Text>
-      <Text style={departureStyles}>Departs at: {time}</Text>
+      <Text style={departureStyles}>Departs at: {departure}</Text>
     </TouchableOpacity>
   );
 };

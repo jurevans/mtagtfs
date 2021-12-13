@@ -12,7 +12,8 @@ import { GET_TRIPS } from 'apollo/queries';
 import { IRoute, ITrip } from 'interfaces';
 import styles from './styles';
 import { Screens } from 'navigation/screens';
-import { getTimeFromInterval } from 'util/';
+import Loading from 'components/Loading';
+import Error from 'components/Error';
 
 type Props = {
   route: IRoute;
@@ -25,12 +26,15 @@ interface TripsVars {
 
 const TripsScreen: FC<Props> = ({ route }) => {
   const { push } = useNavigation();
-  const { data } = useQuery<{ nextTrips: ITrip[] }, TripsVars>(GET_TRIPS, {
-    variables: {
-      feedIndex: route?.feedIndex,
-      routeId: route?.routeId,
+  const { loading, error, data } = useQuery<{ nextTrips: ITrip[] }, TripsVars>(
+    GET_TRIPS,
+    {
+      variables: {
+        feedIndex: route?.feedIndex,
+        routeId: route?.routeId,
+      },
     },
-  });
+  );
 
   const { nextTrips = [] } = data || {};
 
@@ -42,7 +46,7 @@ const TripsScreen: FC<Props> = ({ route }) => {
       }}>
       <Text>
         {item?.tripHeadsign} - Departs at:
-        {getTimeFromInterval(item?.stopTimes[0].departureTime)}
+        {item?.stopTimes[0].departure}
       </Text>
     </TouchableOpacity>
   );
@@ -52,6 +56,8 @@ const TripsScreen: FC<Props> = ({ route }) => {
       <View style={styles.heading}>
         <Text style={styles.header}>Available Trips</Text>
       </View>
+      {loading && <Loading message="Loading trip times..." />}
+      {error && <Error message={error.message} />}
       {data && (
         <FlatList
           data={nextTrips}

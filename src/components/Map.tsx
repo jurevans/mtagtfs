@@ -15,7 +15,7 @@ type Props = {
 
 MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 
-const ANIMATION_DURATION = 1000;
+const ANIMATION_DURATION = 1200;
 const styles = StyleSheet.create({
   map: {
     flex: 1,

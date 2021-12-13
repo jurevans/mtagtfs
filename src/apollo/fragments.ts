@@ -32,11 +32,7 @@ export const TRIP_FIELDS = gql`
     shapeId
     routeId
     stopTimes {
-      departureTime {
-        hours
-        minutes
-        seconds
-      }
+      departure
       stop {
         feedIndex
         stopId

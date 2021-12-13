@@ -18,11 +18,7 @@ export const GET_TRIPS = gql`
       ...TripFields
       stopTimes {
         stopSequence
-        departureTime {
-          hours
-          minutes
-          seconds
-        }
+        departure
         stop {
           ...StopFields
         }

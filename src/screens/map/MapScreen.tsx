@@ -75,6 +75,7 @@ const MapScreen: FC = () => {
 
   const onStopPress = useCallback<StopTimeCallback>(
     ({ stopId, tripId, feedIndex }) => {
+      setMarkerVisible(false);
       dispatch(
         setActiveStop({
           feedIndex: feedIndex,

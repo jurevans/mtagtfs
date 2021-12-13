@@ -19,7 +19,7 @@ const getRenderItem = (
   styles: IStopTimeStyles,
   onPress: StopTimeCallback,
 ) => {
-  const { stop, departureTime } = stopTime;
+  const { stop, departure } = stopTime;
   const { feedIndex, stopId, stopName } = stop;
   return (
     <StopTime
@@ -27,7 +27,7 @@ const getRenderItem = (
       tripId={tripId}
       stopId={stopId}
       stopName={stopName}
-      departureTime={departureTime}
+      departure={departure}
       buttonStyles={styles.button}
       labelStyles={styles.label}
       departureStyles={styles.departure}
