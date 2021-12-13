@@ -3,17 +3,21 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   root: {
     flex: 1,
-    justifyContent: 'center',
     backgroundColor: 'whitesmoke',
   },
-  button: {
-    backgroundColor: '#DDDDDD',
+  heading: {
     padding: 10,
-    borderBottomColor: '#aaa',
-    borderBottomWidth: 2,
+    paddingBottom: 20,
   },
-  error: {
+  header: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#cc0000',
+    color: '#333',
+    paddingBottom: 20,
+  },
+  button: {
+    padding: 20,
+    borderBottomColor: '#ddd',
+    borderBottomWidth: 2,
   },
 });

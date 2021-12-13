@@ -14,6 +14,7 @@ type Props = {
 MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 
 const ANIMATION_DURATION = 1500;
+const styleURL = 'mapbox://styles/jurevans/ckx09yl8v07tm14rupxmhhz3o';
 
 const styles = StyleSheet.create({
   map: {
@@ -27,7 +28,7 @@ const Map: FC<Props> = ({ centerCoordinate, zoomLevel, pitch, children }) => {
 
   return (
     <MapboxGL.MapView
-      styleURL={MapboxGL.StyleURL.Dark}
+      styleURL={styleURL}
       pitchEnabled={true}
       logoEnabled={false}
       compassEnabled={true}

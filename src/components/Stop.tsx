@@ -1,38 +1,62 @@
 import React, { FC } from 'react';
 import MapboxGL, { CircleLayerStyle } from '@react-native-mapbox-gl/maps';
-import { IStop } from 'interfaces';
 import * as turf from '@turf/turf';
+import { Coordinate } from 'interfaces';
+import { StopTimeCallback } from './StopTime';
 
 type Props = {
-  stop: IStop;
+  feedIndex: number;
+  tripId: string;
+  stopId: string;
+  coordinates: Coordinate;
   color?: string;
-  aboveLayerID: string;
-  onPress: (stop: IStop) => void;
+  isActive?: boolean;
+  aboveLayerId: string;
+  onPress: StopTimeCallback;
 };
 
-const getCircleStyles = (color?: string): CircleLayerStyle => ({
-  circleRadius: 6,
-  circleColor: color ? `#${color}` : '#ddd',
+const getCircleStyles = (
+  color: string,
+  isActive: boolean,
+): CircleLayerStyle => ({
+  circleRadius: isActive ? 16 : 6,
+  circleColor: `#${isActive ? 'ddd' : color || 'ddd'}`,
   circleStrokeColor: `#ddd`,
   circleStrokeWidth: 2,
   circlePitchScale: 'map',
   circlePitchAlignment: 'map',
+  circleColorTransition: {
+    duration: 4000,
+    delay: 4000,
+  },
+  circleRadiusTransition: {
+    duration: 500,
+    delay: 500,
+  },
 });
 
-const Stop: FC<Props> = ({ stop, color, aboveLayerID, onPress }) => {
-  const point = turf.point(stop.geom.coordinates);
-
+const Stop: FC<Props> = ({
+  feedIndex,
+  tripId,
+  stopId,
+  coordinates,
+  color = 'ddd',
+  isActive = false,
+  aboveLayerId,
+  onPress,
+}) => {
+  const point = turf.point(coordinates);
   return (
     <MapboxGL.ShapeSource
-      id={`shape-source-${stop.stopId}`}
-      key={`${stop.stopId}`}
+      id={`shape-source-${feedIndex}:${stopId}`}
+      key={`${stopId}`}
       shape={point}
-      onPress={() => onPress(stop)}>
+      onPress={() => onPress({ feedIndex, tripId, stopId })}>
       <MapboxGL.CircleLayer
-        id={`circle-layer-${stop.stopId}`}
-        style={getCircleStyles(color)}
+        id={`circle-layer-${feedIndex}:${stopId}`}
+        style={getCircleStyles(color, isActive)}
         minZoomLevel={12}
-        aboveLayerID={aboveLayerID}
+        aboveLayerID={aboveLayerId}
       />
     </MapboxGL.ShapeSource>
   );

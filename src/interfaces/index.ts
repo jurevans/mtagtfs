@@ -7,6 +7,12 @@ export interface IRoute {
   routeLongName: string;
   routeDesc: string;
   routeColor: string;
+  routeUrl: string;
+}
+
+export interface IFeed {
+  feedIndex: number;
+  feedPublisherName: string;
 }
 
 export interface IStop {
@@ -19,6 +25,7 @@ export interface IStop {
 }
 
 export interface IStopTime {
+  tripId: string;
   stopSequence: number;
   departureTime: {
     hours: number;
@@ -46,4 +53,10 @@ export interface IShape {
     type: string;
     coordinates: Coordinate[];
   };
+}
+
+export interface IInterval {
+  hours: number;
+  minutes: number;
+  seconds: number;
 }
