@@ -23,7 +23,6 @@ import { StopTimeCallback } from 'components/StopTime';
 const DEFAULT_COORD: Coordinate = [-73.94594865587045, 40.7227534777328];
 const DEFAULT_ZOOM = 11;
 const STOP_ZOOM = 15;
-const ANIMATION_DURATION = 1500;
 
 interface ShapeVars {
   shapeId: string;
@@ -83,8 +82,6 @@ const MapScreen: FC = () => {
           stopId: stopId,
         }),
       );
-      setMarkerVisible(false);
-      setTimeout(() => setMarkerVisible(true), ANIMATION_DURATION);
     },
     [dispatch],
   );
@@ -95,7 +92,7 @@ const MapScreen: FC = () => {
       centerCoordinate: stop?.geom.coordinates || DEFAULT_COORD,
       zoomLevel: STOP_ZOOM,
     }));
-  }, [stop?.geom.coordinates]);
+  }, [stop]);
 
   const shapeLayerId = `line-layer-${trip?.feedIndex}:${trip?.tripId}`;
 
@@ -105,7 +102,9 @@ const MapScreen: FC = () => {
         <Map
           centerCoordinate={centerCoordinate}
           zoomLevel={zoomLevel}
-          pitch={pitch}>
+          pitch={pitch}
+          onRegionWillChange={() => setMarkerVisible(false)}
+          onRegionDidChange={() => setMarkerVisible(true)}>
           {stop?.geom && isMarkerVisible && (
             <StopMarker
               feedIndex={stop.feedIndex}
