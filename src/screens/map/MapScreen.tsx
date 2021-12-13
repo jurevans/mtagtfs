@@ -76,8 +76,6 @@ const MapScreen: FC = () => {
 
   const onStopPress = useCallback<StopTimeCallback>(
     ({ stopId, tripId, feedIndex }) => {
-      setMarkerVisible(false);
-      setTimeout(() => setMarkerVisible(true), ANIMATION_DURATION);
       dispatch(
         setActiveStop({
           feedIndex: feedIndex,
@@ -85,19 +83,19 @@ const MapScreen: FC = () => {
           stopId: stopId,
         }),
       );
+      setMarkerVisible(false);
+      setTimeout(() => setMarkerVisible(true), ANIMATION_DURATION);
     },
     [dispatch],
   );
 
   useEffect(() => {
-    if (stop) {
-      setCameraState(state => ({
-        ...state,
-        centerCoordinate: stop?.geom.coordinates || DEFAULT_COORD,
-        zoomLevel: STOP_ZOOM,
-      }));
-    }
-  }, [stop]);
+    setCameraState(state => ({
+      ...state,
+      centerCoordinate: stop?.geom.coordinates || DEFAULT_COORD,
+      zoomLevel: STOP_ZOOM,
+    }));
+  }, [stop?.geom.coordinates]);
 
   const shapeLayerId = `line-layer-${trip?.feedIndex}:${trip?.tripId}`;
 

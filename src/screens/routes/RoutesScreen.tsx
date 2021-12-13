@@ -42,7 +42,7 @@ const RoutesScreen: FC<Props> = ({ feedIndex }) => {
         backgroundColor: `#${item.routeColor}`,
       }}
       onPress={() => {
-        push(Screens.TRIP_SCREEN, { route: item });
+        push(Screens.TRIPS_SCREEN, { route: item });
       }}>
       {/* eslint-disable-next-line react-native/no-inline-styles */}
       <Text style={{ color: item.routeColor ? '#fff' : '#888' }}>
@@ -59,7 +59,7 @@ const RoutesScreen: FC<Props> = ({ feedIndex }) => {
       <FlatList
         data={data?.routes}
         renderItem={renderItem}
-        keyExtractor={(route: IRoute) => `${route.feedIndex}${route.routeId}`}
+        keyExtractor={(route: IRoute) => `${route.feedIndex}:${route.routeId}`}
       />
     </View>
   );

@@ -1,4 +1,4 @@
-import React, { FC, useRef } from 'react';
+import React, { FC } from 'react';
 import { StyleSheet } from 'react-native';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { Coordinate } from 'interfaces';
@@ -23,24 +23,19 @@ const styles = StyleSheet.create({
 });
 
 const Map: FC<Props> = ({ centerCoordinate, zoomLevel, pitch, children }) => {
-  const mapViewRef = useRef<MapboxGL.MapView>(null);
-  const cameraRef = useRef<MapboxGL.Camera>(null);
-
   return (
     <MapboxGL.MapView
       styleURL={styleURL}
       pitchEnabled={true}
       logoEnabled={false}
       compassEnabled={true}
-      style={styles.map}
-      ref={mapViewRef}>
+      style={styles.map}>
       <MapboxGL.Camera
         zoomLevel={zoomLevel}
         centerCoordinate={centerCoordinate}
         pitch={pitch}
         animationMode={'flyTo'}
         animationDuration={ANIMATION_DURATION}
-        ref={cameraRef}
       />
       {children}
     </MapboxGL.MapView>

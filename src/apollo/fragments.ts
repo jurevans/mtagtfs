@@ -38,6 +38,7 @@ export const TRIP_FIELDS = gql`
         seconds
       }
       stop {
+        feedIndex
         stopId
         stopName
         geom {

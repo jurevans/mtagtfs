@@ -1,4 +1,4 @@
-import MapboxGL from '@react-native-mapbox-gl/maps';
+import MapboxGL, { LineLayerStyle } from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
 import { Coordinate } from 'interfaces';
 import React, { FC } from 'react';
@@ -10,10 +10,11 @@ type Props = {
   coordinates?: Coordinate[];
 };
 
-const getLineStyles = (color?: string) => ({
-  lineColor: color ? `#${color}` : '#ddd',
+const getLineStyles = (color?: string): LineLayerStyle => ({
+  lineColor: `#${color ? color : 'ddd'}`,
   lineWidth: 8.5,
   lineOpacity: 0.75,
+  lineCap: 'round',
 });
 
 const TripShape: FC<Props> = ({

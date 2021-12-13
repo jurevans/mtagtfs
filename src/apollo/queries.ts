@@ -10,11 +10,11 @@ export const GET_FEEDS = gql`
   }
 `;
 
-export const GET_TRIP = gql`
+export const GET_TRIPS = gql`
   ${TRIP_FIELDS}
   ${STOP_FIELDS}
-  query GetNextTrip($feedIndex: Int!, $routeId: String!) {
-    nextTrip(feedIndex: $feedIndex, routeId: $routeId) {
+  query GetNextTrips($feedIndex: Int!, $routeId: String!) {
+    nextTrips(feedIndex: $feedIndex, routeId: $routeId) {
       ...TripFields
       stopTimes {
         stopSequence
