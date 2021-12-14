@@ -114,6 +114,7 @@ const MapScreen: FC = () => {
         ...cameraState,
         centerCoordinate: point.coordinates,
         pitch: 0,
+        zoomLevel: 18,
       });
     },
     [cameraState],

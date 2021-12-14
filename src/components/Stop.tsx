@@ -29,8 +29,8 @@ const getCircleStyles = (
     delay: 4000,
   },
   circleRadiusTransition: {
-    duration: 500,
-    delay: 500,
+    duration: 1000,
+    delay: 1000,
   },
 });
 
