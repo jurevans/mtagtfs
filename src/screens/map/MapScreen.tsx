@@ -9,18 +9,12 @@ import Stop from 'components/Stop';
 import { setActiveStop } from 'slices/stops';
 import { GET_SHAPE } from 'apollo/queries';
 import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
-import {
-  Coordinate,
-  IRoute,
-  IShape,
-  IStop,
-  IStopTime,
-  ITrip,
-} from 'interfaces';
+import { IRoute, IShape, IStop, IStopTime, ITrip } from 'interfaces';
 import styles from './styles';
 import { StopTimeCallback } from 'components/StopTime';
+import { Feature, Point, Position } from '@turf/turf';
 
-const DEFAULT_COORD: Coordinate = [-73.94594865587045, 40.7227534777328];
+const DEFAULT_COORD: Position = [-73.94594865587045, 40.7227534777328];
 const DEFAULT_ZOOM = 11;
 const STOP_ZOOM = 15;
 
@@ -95,6 +89,28 @@ const MapScreen: FC = () => {
     }));
   }, [stop]);
 
+  const onRegionWillChange = useCallback(() => {
+    setMarkerVisible(false);
+  }, []);
+
+  const onRegionDidChange = useCallback(() => {
+    setMarkerVisible(true);
+  }, []);
+
+  const onLongPress = useCallback(
+    (feature: Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>) => {
+      console.log('onLongPress', feature);
+      const { geometry } = feature;
+      const point = geometry as Point;
+      setCameraState({
+        ...cameraState,
+        centerCoordinate: point.coordinates,
+        pitch: 0,
+      });
+    },
+    [cameraState],
+  );
+
   const shapeLayerId = `line-layer-${trip?.feedIndex}:${trip?.tripId}`;
 
   return (
@@ -104,8 +120,9 @@ const MapScreen: FC = () => {
           centerCoordinate={centerCoordinate}
           zoomLevel={zoomLevel}
           pitch={pitch}
-          onRegionWillChange={() => setMarkerVisible(false)}
-          onRegionDidChange={() => setMarkerVisible(true)}>
+          onRegionWillChange={onRegionWillChange}
+          onRegionDidChange={onRegionDidChange}
+          onLongPress={onLongPress}>
           {stop?.geom && isMarkerVisible && (
             <StopMarker
               feedIndex={stop.feedIndex}
