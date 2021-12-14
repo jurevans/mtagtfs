@@ -1,5 +1,3 @@
-export type Coordinate = [number, number];
-
 export interface IRoute {
   feedIndex: number;
   routeId: string;
@@ -19,9 +17,7 @@ export interface IStop {
   feedIndex: number;
   stopId: string;
   stopName: string;
-  geom: {
-    coordinates: Coordinate;
-  };
+  geom: GeoJSON.Point;
 }
 
 export interface IStopTime {
@@ -45,10 +41,7 @@ export interface ITrip {
 export interface IShape {
   shapeId: string;
   length: number;
-  geom: {
-    type: string;
-    coordinates: Coordinate[];
-  };
+  geom: GeoJSON.LineString;
 }
 
 export interface IInterval {
