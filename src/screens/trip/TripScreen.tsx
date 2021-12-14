@@ -60,7 +60,7 @@ const TripScreen: FC<Props> = ({ tripId, route }) => {
             {trip.tripHeadsign} -{trip.directionId ? 'Inbound' : 'Outbound'}
           </Text>
           <Trip
-            tripId={trip?.tripId || ''}
+            tripId={trip?.tripId}
             stopTimes={trip.stopTimes}
             styles={{
               button: styles.button,

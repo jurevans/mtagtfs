@@ -9,11 +9,11 @@ import {
 import { useNavigation } from 'react-native-navigation-hooks';
 import { useQuery } from '@apollo/client';
 import { GET_TRIPS } from 'apollo/queries';
-import { IRoute, ITrip } from 'interfaces';
-import styles from './styles';
-import { Screens } from 'navigation/screens';
 import Loading from 'components/Loading';
 import Error from 'components/Error';
+import { IRoute, ITrip } from 'interfaces';
+import { Screens } from 'navigation/screens';
+import styles from './styles';
 
 type Props = {
   route: IRoute;
