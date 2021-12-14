@@ -8,6 +8,7 @@ import {
   LinesScreen,
   MapScreen,
   SettingsScreen,
+  TripsScreen,
   TripScreen,
 } from 'screens';
 import store from 'store';
@@ -43,6 +44,11 @@ export default function () {
     Screens.SETTINGS_SCREEN,
     () => withProviders(SettingsScreen, store, client),
     () => SettingsScreen,
+  );
+  Navigation.registerComponent(
+    Screens.TRIPS_SCREEN,
+    () => withProviders(TripsScreen, store, client),
+    () => TripsScreen,
   );
   Navigation.registerComponent(
     Screens.TRIP_SCREEN,

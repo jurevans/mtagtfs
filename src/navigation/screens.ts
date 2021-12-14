@@ -5,5 +5,6 @@ export enum Screens {
   FAVORITES_SCREEN = 'mtagtfs.FavoritesScreen',
   LINES_SCREEN = 'mtagtfs.LinesScreen',
   SETTINGS_SCREEN = 'mtagtfs.SettingsScreen',
+  TRIPS_SCREEN = 'mtagtfs.TripsScreen',
   TRIP_SCREEN = 'mtagtfs.TripScreen',
 }
