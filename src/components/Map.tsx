@@ -1,16 +1,21 @@
 import React, { FC } from 'react';
-import { StyleSheet } from 'react-native';
-import MapboxGL from '@react-native-mapbox-gl/maps';
-import { Coordinate } from 'interfaces';
+import { GestureResponderEvent, StyleSheet } from 'react-native';
+import MapboxGL, { RegionPayload } from '@react-native-mapbox-gl/maps';
+import { Feature, Point, Position } from '@turf/helpers';
 import { MAPBOX_ACCESS_TOKEN, MAPBOX_STYLE_URL } from '@env';
 
 type Props = {
-  centerCoordinate: Coordinate;
+  centerCoordinate: Position;
   zoomLevel: number;
   pitch: number;
   children: any;
-  onRegionWillChange?: () => void;
-  onRegionDidChange?: () => void;
+  onRegionWillChange?: (feature: Feature<Point, RegionPayload>) => void;
+  onRegionDidChange?: (feature: Feature<Point, RegionPayload>) => void;
+  onTouchStart?: (e: GestureResponderEvent) => void;
+  onTouchEnd?: (e: GestureResponderEvent) => void;
+  onLongPress?: (
+    feature: Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>,
+  ) => void;
 };
 
 MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
@@ -28,6 +33,9 @@ const Map: FC<Props> = ({
   pitch,
   onRegionWillChange,
   onRegionDidChange,
+  onTouchStart,
+  onTouchEnd,
+  onLongPress,
   children,
 }) => {
   return (
@@ -38,6 +46,9 @@ const Map: FC<Props> = ({
       compassEnabled={true}
       onRegionWillChange={onRegionWillChange}
       onRegionDidChange={onRegionDidChange}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      onLongPress={onLongPress}
       style={styles.map}>
       <MapboxGL.Camera
         zoomLevel={zoomLevel}

@@ -1,26 +1,22 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { gql, useQuery, useApolloClient } from '@apollo/client';
+import { Feature, Point, Position } from '@turf/turf';
+import { RegionPayload } from '@react-native-mapbox-gl/maps';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import Map from 'components/Map';
 import TripShape from 'components/TripShape';
-import StopMarker from 'components/StopMarker';
 import Stop from 'components/Stop';
+import StopMarker from 'components/StopMarker';
+import { StopTimeCallback } from 'components/StopTime';
 import { setActiveStop } from 'slices/stops';
 import { GET_SHAPE } from 'apollo/queries';
 import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
-import {
-  Coordinate,
-  IRoute,
-  IShape,
-  IStop,
-  IStopTime,
-  ITrip,
-} from 'interfaces';
-import styles from './styles';
-import { StopTimeCallback } from 'components/StopTime';
+import { IRoute, IShape, IStop, IStopTime, ITrip } from 'interfaces';
 
-const DEFAULT_COORD: Coordinate = [-73.94594865587045, 40.7227534777328];
+import styles from './styles';
+
+const DEFAULT_COORD: Position = [-73.94594865587045, 40.7227534777328];
 const DEFAULT_ZOOM = 11;
 const STOP_ZOOM = 15;
 
@@ -73,6 +69,14 @@ const MapScreen: FC = () => {
     `,
   });
 
+  useEffect(() => {
+    setCameraState(state => ({
+      ...state,
+      centerCoordinate: stop?.geom.coordinates || DEFAULT_COORD,
+      zoomLevel: STOP_ZOOM,
+    }));
+  }, [stop]);
+
   const onStopPress = useCallback<StopTimeCallback>(
     ({ stopId, tripId, feedIndex }) => {
       setMarkerVisible(false);
@@ -87,13 +91,34 @@ const MapScreen: FC = () => {
     [dispatch],
   );
 
-  useEffect(() => {
-    setCameraState(state => ({
-      ...state,
-      centerCoordinate: stop?.geom.coordinates || DEFAULT_COORD,
-      zoomLevel: STOP_ZOOM,
-    }));
-  }, [stop]);
+  const onRegionWillChange = useCallback(() => {
+    setMarkerVisible(false);
+  }, []);
+
+  const onRegionDidChange = useCallback(
+    (feature: Feature<Point, RegionPayload>) => {
+      setMarkerVisible(true);
+      setCameraState(state => ({
+        ...state,
+        pitch: feature.properties.pitch,
+      }));
+    },
+    [],
+  );
+
+  const onLongPress = useCallback(
+    (feature: Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>) => {
+      const { geometry } = feature;
+      const point = geometry as Point;
+      setCameraState({
+        ...cameraState,
+        centerCoordinate: point.coordinates,
+        pitch: 0,
+        zoomLevel: 18,
+      });
+    },
+    [cameraState],
+  );
 
   const shapeLayerId = `line-layer-${trip?.feedIndex}:${trip?.tripId}`;
 
@@ -104,8 +129,9 @@ const MapScreen: FC = () => {
           centerCoordinate={centerCoordinate}
           zoomLevel={zoomLevel}
           pitch={pitch}
-          onRegionWillChange={() => setMarkerVisible(false)}
-          onRegionDidChange={() => setMarkerVisible(true)}>
+          onRegionWillChange={onRegionWillChange}
+          onRegionDidChange={onRegionDidChange}
+          onLongPress={onLongPress}>
           {stop?.geom && isMarkerVisible && (
             <StopMarker
               feedIndex={stop.feedIndex}

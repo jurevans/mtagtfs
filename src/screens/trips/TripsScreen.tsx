@@ -57,6 +57,7 @@ const TripsScreen: FC<Props> = ({ route }) => {
         <Text style={styles.header}>Available Trips</Text>
       </View>
       {loading && <Loading message="Loading trip times..." />}
+      {!loading && !data && <Text>No upcoming trips could be found</Text>}
       {error && <Error message={error.message} />}
       {data && (
         <FlatList

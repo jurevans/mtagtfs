@@ -1,13 +1,13 @@
 import MapboxGL, { LineLayerStyle } from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
-import { Coordinate } from 'interfaces';
+import { Position } from '@turf/turf';
 import React, { FC } from 'react';
 
 type Props = {
   shapeSourceId: string;
   layerId: string;
   color?: string;
-  coordinates?: Coordinate[];
+  coordinates?: Position[];
 };
 
 const getLineStyles = (color?: string): LineLayerStyle => ({

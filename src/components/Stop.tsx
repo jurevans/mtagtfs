@@ -1,14 +1,13 @@
 import React, { FC } from 'react';
 import MapboxGL, { CircleLayerStyle } from '@react-native-mapbox-gl/maps';
 import * as turf from '@turf/turf';
-import { Coordinate } from 'interfaces';
 import { StopTimeCallback } from './StopTime';
 
 type Props = {
   feedIndex: number;
   tripId: string;
   stopId: string;
-  coordinates: Coordinate;
+  coordinates: turf.Position;
   color?: string;
   isActive?: boolean;
   aboveLayerId: string;
@@ -30,8 +29,8 @@ const getCircleStyles = (
     delay: 4000,
   },
   circleRadiusTransition: {
-    duration: 500,
-    delay: 500,
+    duration: 1000,
+    delay: 1000,
   },
 });
 
