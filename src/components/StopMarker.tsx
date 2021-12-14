@@ -19,7 +19,8 @@ const svgProps: SvgProps = {
 const StopMarker: FC<Props> = ({ feedIndex, stopId, coordinates }) => (
   <MapboxGL.MarkerView
     id={`marker-${feedIndex}:${stopId}`}
-    coordinate={coordinates}>
+    coordinate={coordinates}
+    anchor={{ x: 0.5, y: 1.0 }}>
     <Pin nativeID={stopId} {...svgProps} />
   </MapboxGL.MarkerView>
 );
