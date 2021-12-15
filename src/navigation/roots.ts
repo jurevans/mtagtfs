@@ -1,4 +1,5 @@
 import { Navigation } from 'react-native-navigation';
+import { Dimensions } from 'react-native';
 import { Screens } from './screens';
 import registerScreens from './registerScreens';
 
@@ -24,6 +25,28 @@ export const pushTabbedApp = () => {
               options: {
                 bottomTab: {
                   text: 'Dashboard',
+                },
+                animations: {
+                  push: {
+                    content: {
+                      translationX: {
+                        from: Dimensions.get('window').width,
+                        to: 0,
+                        duration: 300,
+                        interpolation: { type: 'accelerate' },
+                      },
+                    },
+                  },
+                  pop: {
+                    content: {
+                      translationX: {
+                        from: 0,
+                        to: Dimensions.get('window').width,
+                        duration: 300,
+                        interpolation: { type: 'decelerate' },
+                      },
+                    },
+                  },
                 },
               },
             },

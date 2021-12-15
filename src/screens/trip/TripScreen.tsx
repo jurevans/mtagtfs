@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useContext } from 'react';
+import React, { FC, useCallback, useContext, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { gql, useApolloClient } from '@apollo/client';
 import { Navigation } from 'react-native-navigation';
@@ -7,9 +7,9 @@ import { useAppDispatch } from 'store';
 import { setActiveStop } from 'slices/stops';
 import Trip from 'components/Trip';
 import { StopTimeCallback } from 'components/StopTime';
+import { TRIP_FIELDS } from 'apollo/fragments';
 import { IRoute, ITrip } from 'interfaces';
 import styles from './styles';
-import { TRIP_FIELDS } from 'apollo/fragments';
 
 type Props = {
   route: IRoute;
@@ -27,6 +27,18 @@ const TripScreen: FC<Props> = ({ tripId, route }) => {
       ${TRIP_FIELDS}
     `,
   });
+
+  useEffect(() => {
+    if (trip) {
+      Navigation.mergeOptions(componentId, {
+        topBar: {
+          title: {
+            text: trip.tripHeadsign,
+          },
+        },
+      });
+    }
+  }, [componentId, trip]);
 
   const goToStop = useCallback<StopTimeCallback>(
     // eslint-disable-next-line no-shadow

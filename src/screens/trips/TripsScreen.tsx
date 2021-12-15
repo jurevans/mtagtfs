@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import {
   FlatList,
   ListRenderItemInfo,
@@ -6,7 +6,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useNavigation } from 'react-native-navigation-hooks';
+import { Navigation } from 'react-native-navigation';
+import {
+  NavigationContext,
+  useNavigation,
+} from 'react-native-navigation-hooks';
 import { useQuery } from '@apollo/client';
 import { GET_TRIPS } from 'apollo/queries';
 import Loading from 'components/Loading';
@@ -26,6 +30,8 @@ interface TripsVars {
 
 const TripsScreen: FC<Props> = ({ route }) => {
   const { push } = useNavigation();
+  const { componentId = '' } = useContext(NavigationContext);
+
   const { loading, error, data } = useQuery<{ nextTrips: ITrip[] }, TripsVars>(
     GET_TRIPS,
     {
@@ -37,6 +43,18 @@ const TripsScreen: FC<Props> = ({ route }) => {
   );
 
   const { nextTrips = [] } = data || {};
+
+  useEffect(() => {
+    if (route) {
+      Navigation.mergeOptions(componentId, {
+        topBar: {
+          title: {
+            text: route.routeLongName,
+          },
+        },
+      });
+    }
+  }, [componentId, route]);
 
   const renderItem = ({ item }: ListRenderItemInfo<ITrip>) => (
     <TouchableOpacity
