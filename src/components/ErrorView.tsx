@@ -6,12 +6,14 @@ type Props = {
   styles?: StyleProp<any>;
 };
 
-const Loading: FC<Props> = ({ message, styles = {} }) => {
+const ErrorView: FC<Props> = ({ message, styles = {} }) => {
   return (
     <View>
-      <Text style={{ ...styles }}>{message || 'Loading...'}</Text>
+      <Text style={{ ...styles }}>
+        {message || 'There was an error making the request!'}
+      </Text>
     </View>
   );
 };
 
-export default Loading;
+export default ErrorView;

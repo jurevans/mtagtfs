@@ -13,8 +13,8 @@ import {
 } from 'react-native-navigation-hooks';
 import { useQuery } from '@apollo/client';
 import { GET_TRIPS } from 'apollo/queries';
-import Loading from 'components/Loading';
-import Error from 'components/Error';
+import LoadingView from 'components/LoadingView';
+import ErrorView from 'components/ErrorView';
 import { IRoute, ITrip } from 'interfaces';
 import { Screens } from 'navigation/screens';
 import styles from './styles';
@@ -74,9 +74,9 @@ const TripsScreen: FC<Props> = ({ route }) => {
       <View style={styles.heading}>
         <Text style={styles.header}>Available Trips</Text>
       </View>
-      {loading && <Loading message="Loading trip times..." />}
+      {loading && <LoadingView message="Loading trip times..." />}
       {!loading && !data && <Text>No upcoming trips could be found</Text>}
-      {error && <Error message={error.message} />}
+      {error && <ErrorView message={error.message} />}
       {data && (
         <FlatList
           data={nextTrips}

@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { FlatList, ListRenderItemInfo } from 'react-native';
-import StopTime, {
+import StopTimeButton, {
   IStopTimeStyles,
   StopTimeCallback,
-} from 'components/StopTime';
+} from 'components/StopTimeButton';
 import { IStopTime } from 'interfaces';
 
 type Props = {
@@ -22,7 +22,7 @@ const getRenderItem = (
   const { stop, departure } = stopTime;
   const { feedIndex, stopId, stopName } = stop;
   return (
-    <StopTime
+    <StopTimeButton
       feedIndex={feedIndex}
       tripId={tripId}
       stopId={stopId}
@@ -36,7 +36,7 @@ const getRenderItem = (
   );
 };
 
-const Trip: FC<Props> = ({ tripId, stopTimes, styles = {}, onPress }) => {
+const TripList: FC<Props> = ({ tripId, stopTimes, styles = {}, onPress }) => {
   return (
     <FlatList
       data={stopTimes}
@@ -48,4 +48,4 @@ const Trip: FC<Props> = ({ tripId, stopTimes, styles = {}, onPress }) => {
   );
 };
 
-export default Trip;
+export default TripList;

@@ -34,7 +34,7 @@ const getCircleStyles = (
   },
 });
 
-const Stop: FC<Props> = ({
+const StopShape: FC<Props> = ({
   feedIndex,
   tripId,
   stopId,
@@ -61,4 +61,4 @@ const Stop: FC<Props> = ({
   );
 };
 
-export default Stop;
+export default StopShape;

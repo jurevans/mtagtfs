@@ -6,9 +6,9 @@ import { RegionPayload } from '@react-native-mapbox-gl/maps';
 import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
-import Map from 'components/Map';
+import MapView from 'components/MapView';
 import TripShape from 'components/TripShape';
-import Stop from 'components/Stop';
+import StopShape from 'components/StopShape';
 import StopMarker from 'components/StopMarker';
 import { StopTimeCallback } from 'components/StopTime';
 import { setActiveStop } from 'slices/stops';
@@ -135,7 +135,7 @@ const MapScreen: FC = () => {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        <Map
+        <MapView
           centerCoordinate={centerCoordinate}
           zoomLevel={zoomLevel}
           pitch={pitch}
@@ -162,7 +162,7 @@ const MapScreen: FC = () => {
           )}
           {trip?.stopTimes &&
             trip?.stopTimes.map((st: IStopTime) => (
-              <Stop
+              <StopShape
                 key={st.stop.stopId}
                 feedIndex={trip.feedIndex}
                 stopId={st.stop.stopId}
@@ -174,7 +174,7 @@ const MapScreen: FC = () => {
                 onPress={onStopPress}
               />
             ))}
-        </Map>
+        </MapView>
       </View>
     </View>
   );

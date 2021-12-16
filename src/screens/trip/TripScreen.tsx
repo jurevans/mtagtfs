@@ -5,8 +5,8 @@ import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
 import { useAppDispatch } from 'store';
 import { setActiveStop } from 'slices/stops';
-import Trip from 'components/Trip';
-import { StopTimeCallback } from 'components/StopTime';
+import TripList from 'components/TripList';
+import { StopTimeCallback } from 'components/StopTimeButton';
 import { TRIP_FIELDS } from 'apollo/fragments';
 import { IRoute, ITrip } from 'interfaces';
 import styles from './styles';
@@ -41,7 +41,6 @@ const TripScreen: FC<Props> = ({ tripId, route }) => {
   }, [componentId, trip]);
 
   const goToStop = useCallback<StopTimeCallback>(
-    // eslint-disable-next-line no-shadow
     ({ stopId, tripId, feedIndex }) => {
       dispatch(
         setActiveStop({
@@ -71,7 +70,7 @@ const TripScreen: FC<Props> = ({ tripId, route }) => {
           <Text style={styles.tripHeader}>
             {trip.tripHeadsign} -{trip.directionId ? 'Inbound' : 'Outbound'}
           </Text>
-          <Trip
+          <TripList
             tripId={trip?.tripId}
             stopTimes={trip.stopTimes}
             styles={{

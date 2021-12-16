@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Map: FC<Props> = ({
+const MapView: FC<Props> = ({
   centerCoordinate,
   zoomLevel,
   pitch,
@@ -62,4 +62,4 @@ const Map: FC<Props> = ({
   );
 };
 
-export default Map;
+export default MapView;
