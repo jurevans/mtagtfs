@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import {
   FlatList,
   ListRenderItemInfo,
@@ -6,21 +6,50 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useNavigation } from 'react-native-navigation-hooks';
-import { useQuery } from '@apollo/client';
+import { Navigation } from 'react-native-navigation';
+import {
+  NavigationContext,
+  useNavigation,
+} from 'react-native-navigation-hooks';
+import { gql, useApolloClient, useQuery } from '@apollo/client';
 import { GET_ROUTES } from 'apollo/queries';
+import { FEED_FIELDS } from 'apollo/fragments';
 import { Screens } from 'navigation/screens';
-import { IRoute } from 'interfaces';
-import styles from './styles';
 import Error from 'components/Error';
 import Loading from 'components/Loading';
+import { IFeed, IRoute } from 'interfaces';
+import styles from './styles';
 
 type Props = {
   feedIndex: number;
 };
 
 const RoutesScreen: FC<Props> = ({ feedIndex }) => {
+  const client = useApolloClient();
   const { push } = useNavigation();
+  const { componentId = '' } = useContext(NavigationContext);
+
+  // Retrieve trip fragment from cache
+  const feed: IFeed | null = client.readFragment({
+    id: `FeedInfo:${feedIndex}`,
+    fragment: gql`
+      ${FEED_FIELDS}
+    `,
+  });
+
+  const { feedPublisherName } = feed || {};
+
+  useEffect(() => {
+    if (feedPublisherName) {
+      Navigation.mergeOptions(componentId, {
+        topBar: {
+          title: {
+            text: `${feedPublisherName}`,
+          },
+        },
+      });
+    }
+  }, [componentId, feedPublisherName]);
 
   interface RouteVars {
     feedIndex: number;

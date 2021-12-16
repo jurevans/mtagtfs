@@ -1,10 +1,18 @@
 import { gql } from '@apollo/client';
 
+export const FEED_FIELDS = gql`
+  fragment FeedFields on FeedInfo {
+    feedIndex
+    feedPublisherName
+  }
+`;
+
 export const STOP_FIELDS = gql`
   fragment StopFields on Stop {
     feedIndex
     stopId
     stopName
+    parentStation
     geom {
       coordinates
     }

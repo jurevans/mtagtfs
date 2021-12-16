@@ -1,8 +1,10 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { gql, useQuery, useApolloClient } from '@apollo/client';
 import { Feature, Point, Position } from '@turf/turf';
 import { RegionPayload } from '@react-native-mapbox-gl/maps';
+import { Navigation } from 'react-native-navigation';
+import { NavigationContext } from 'react-native-navigation-hooks';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
 import Map from 'components/Map';
 import TripShape from 'components/TripShape';
@@ -13,7 +15,6 @@ import { setActiveStop } from 'slices/stops';
 import { GET_SHAPE } from 'apollo/queries';
 import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
 import { IRoute, IShape, IStop, IStopTime, ITrip } from 'interfaces';
-
 import styles from './styles';
 
 const DEFAULT_COORD: Position = [-73.94594865587045, 40.7227534777328];
@@ -28,6 +29,7 @@ const MapScreen: FC = () => {
   const { activeStop } = useAppSelector(state => state.stops);
   const dispatch = useAppDispatch();
   const client = useApolloClient();
+  const { componentId = '' } = useContext(NavigationContext);
 
   const [isMarkerVisible, setMarkerVisible] = useState(true);
   const [cameraState, setCameraState] = useState({
@@ -70,12 +72,20 @@ const MapScreen: FC = () => {
   });
 
   useEffect(() => {
+    Navigation.mergeOptions(componentId, {
+      topBar: {
+        title: {
+          text: stop?.stopName,
+        },
+      },
+    });
+
     setCameraState(state => ({
       ...state,
       centerCoordinate: stop?.geom.coordinates || DEFAULT_COORD,
       zoomLevel: STOP_ZOOM,
     }));
-  }, [stop]);
+  }, [componentId, stop]);
 
   const onStopPress = useCallback<StopTimeCallback>(
     ({ stopId, tripId, feedIndex }) => {

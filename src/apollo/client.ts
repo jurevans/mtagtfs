@@ -22,6 +22,9 @@ const client = new ApolloClient({
   link: concat(authMiddleware, link),
   cache: new InMemoryCache({
     typePolicies: {
+      FeedInfo: {
+        keyFields: FeedInfo => `${FeedInfo.__typename}:${FeedInfo.feedIndex}`,
+      },
       Stop: {
         keyFields: Stop =>
           `${Stop.__typename}:${Stop.feedIndex}:${Stop.stopId}`,

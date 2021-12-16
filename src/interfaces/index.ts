@@ -17,6 +17,7 @@ export interface IStop {
   feedIndex: number;
   stopId: string;
   stopName: string;
+  parentStation: string;
   geom: GeoJSON.Point;
 }
 
