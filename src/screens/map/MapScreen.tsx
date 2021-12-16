@@ -10,7 +10,7 @@ import MapView from 'components/MapView';
 import TripShape from 'components/TripShape';
 import StopShape from 'components/StopShape';
 import StopMarker from 'components/StopMarker';
-import { StopTimeCallback } from 'components/StopTime';
+import { StopTimeCallback } from 'components/StopTimeButton';
 import { setActiveStop } from 'slices/stops';
 import { GET_SHAPE } from 'apollo/queries';
 import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
