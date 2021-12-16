@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import MapboxGL, { CircleLayerStyle } from '@react-native-mapbox-gl/maps';
-import * as turf from '@turf/turf';
+import { point, Position } from '@turf/turf';
 import { StopTimeCallback } from './StopTime';
 
 type Props = {
   feedIndex: number;
   tripId: string;
   stopId: string;
-  coordinates: turf.Position;
+  coordinates: Position;
   color?: string;
   isActive?: boolean;
   aboveLayerId: string;
@@ -44,12 +44,12 @@ const Stop: FC<Props> = ({
   aboveLayerId,
   onPress,
 }) => {
-  const point = turf.point(coordinates);
+  const shape = point(coordinates);
   return (
     <MapboxGL.ShapeSource
       id={`shape-source-${feedIndex}:${stopId}`}
       key={`${stopId}`}
-      shape={point}
+      shape={shape}
       onPress={() => onPress({ feedIndex, tripId, stopId })}>
       <MapboxGL.CircleLayer
         id={`circle-layer-${feedIndex}:${stopId}`}

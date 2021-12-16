@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { GestureResponderEvent, StyleSheet } from 'react-native';
 import MapboxGL, { RegionPayload } from '@react-native-mapbox-gl/maps';
-import { Feature, Point, Position } from '@turf/helpers';
+import { Feature, Point, Position } from '@turf/turf';
 import { MAPBOX_ACCESS_TOKEN, MAPBOX_STYLE_URL } from '@env';
 
 type Props = {

@@ -1,6 +1,5 @@
 import MapboxGL, { LineLayerStyle } from '@react-native-mapbox-gl/maps';
-import * as turf from '@turf/turf';
-import { Position } from '@turf/turf';
+import { lineString, Position } from '@turf/turf';
 import React, { FC } from 'react';
 
 type Props = {
@@ -23,10 +22,9 @@ const TripShape: FC<Props> = ({
   color,
   coordinates = [],
 }) => {
-  const lineString = turf.lineString(coordinates);
-
+  const shape = lineString(coordinates);
   return (
-    <MapboxGL.ShapeSource id={shapeSourceId} shape={lineString}>
+    <MapboxGL.ShapeSource id={shapeSourceId} shape={shape}>
       <MapboxGL.LineLayer id={layerId} style={getLineStyles(color)} />
     </MapboxGL.ShapeSource>
   );
