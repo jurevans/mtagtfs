@@ -31,7 +31,7 @@ const MapScreen: FC = () => {
   const client = useApolloClient();
   const { componentId = '' } = useContext(NavigationContext);
 
-  const [isMarkerVisible, setMarkerVisible] = useState(true);
+  const [isMarkerVisible, setMarkerVisible] = useState(false);
   const [cameraState, setCameraState] = useState({
     zoomLevel: DEFAULT_ZOOM,
     centerCoordinate: DEFAULT_COORD,

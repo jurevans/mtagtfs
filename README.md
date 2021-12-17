@@ -73,10 +73,11 @@ npx react-native run-ios
 Read more about the frameworks and libraries this app utilizes at the links below:
 
 - [React-Native](https://reactnative.dev/)
-- [React Native Navigation](https://wix.github.io/react-native-navigation/docs/before-you-start/)
-- [React Native Navigation Hooks](https://underscopeio.github.io/react-native-navigation-hooks/docs/before-you-start/)
-- [TypeScript](https://www.typescriptlang.org/)
+- [React Native Navigation](https://wix.github.io/react-native-navigation/)
+- [React Native Navigation Hooks](https://underscopeio.github.io/react-native-navigation-hooks/)
+- [React Native MapboxGL](https://github.com/react-native-mapbox-gl/)
 - [MapBox](https://www.mapbox.com/)
+- [TypeScript](https://www.typescriptlang.org/)
 - [ApolloClient](https://www.apollographql.com/docs/react/)
 - [Redux Toolkit](https://redux-toolkit.js.org/)
 - [Turfjs](https://github.com/Turfjs/turf)
