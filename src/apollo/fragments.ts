@@ -12,7 +12,6 @@ export const STOP_FIELDS = gql`
     feedIndex
     stopId
     stopName
-    parentStation
     geom {
       coordinates
     }
@@ -44,10 +43,7 @@ export const TRIP_FIELDS = gql`
       stop {
         feedIndex
         stopId
-        stopName
-        geom {
-          coordinates
-        }
+        parentStation
       }
     }
   }

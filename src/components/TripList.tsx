@@ -20,12 +20,12 @@ const getRenderItem = (
   onPress: StopTimeCallback,
 ) => {
   const { stop, departure } = stopTime;
-  const { feedIndex, stopId, stopName } = stop;
+  const { feedIndex, stopId, parentStation, stopName } = stop;
   return (
     <StopTimeButton
       feedIndex={feedIndex}
       tripId={tripId}
-      stopId={stopId}
+      stopId={parentStation || stopId}
       stopName={stopName}
       departure={departure}
       buttonStyles={styles.button}
@@ -43,7 +43,10 @@ const TripList: FC<Props> = ({ tripId, stopTimes, styles = {}, onPress }) => {
       renderItem={({ item }: ListRenderItemInfo<IStopTime>) =>
         getRenderItem(tripId, item, styles, onPress)
       }
-      keyExtractor={(stopTime: IStopTime) => stopTime.stop.stopId}
+      keyExtractor={(stopTime: IStopTime) => {
+        const { feedIndex, stopId, parentStation } = stopTime.stop;
+        return `${feedIndex}:${parentStation || stopId}`;
+      }}
     />
   );
 };

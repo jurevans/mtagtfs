@@ -27,7 +27,9 @@ const client = new ApolloClient({
       },
       Stop: {
         keyFields: Stop =>
-          `${Stop.__typename}:${Stop.feedIndex}:${Stop.stopId}`,
+          `${Stop.__typename}:${Stop.feedIndex}:${
+            Stop.parentStation || Stop.stopId
+          }`,
       },
       Trip: {
         keyFields: Trip =>

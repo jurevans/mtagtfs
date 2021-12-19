@@ -1,4 +1,11 @@
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  FC,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { View } from 'react-native';
 import { gql, useQuery, useApolloClient } from '@apollo/client';
 import { Feature, Point, Position } from '@turf/turf';
@@ -15,7 +22,7 @@ import { setActiveStop } from 'slices/stops';
 import { GET_SHAPE } from 'apollo/queries';
 import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
 import { IRoute, IShape, IStop, IStopTime, ITrip } from 'interfaces';
-// import { getRadiusByZoomLat } from 'util/';
+import { getRadiusByZoomLat } from 'util/';
 import styles from './styles';
 
 const DEFAULT_COORD: Position = [-73.94594865587045, 40.7227534777328];
@@ -23,7 +30,7 @@ const DEFAULT_ZOOM = 11;
 const STOP_ZOOM = 15;
 
 interface ShapeVars {
-  shapeId: string;
+  shapeId?: string;
 }
 
 const MapScreen: FC = () => {
@@ -52,7 +59,7 @@ const MapScreen: FC = () => {
   // Query shape geometries
   const { loading, data } = useQuery<{ shape: IShape }, ShapeVars>(GET_SHAPE, {
     variables: {
-      shapeId: trip?.shapeId || '',
+      shapeId: trip?.shapeId,
     },
   });
 
@@ -81,25 +88,27 @@ const MapScreen: FC = () => {
       },
     });
 
-    setCameraState(state => ({
-      ...state,
-      centerCoordinate: stop?.geom.coordinates || DEFAULT_COORD,
-      zoomLevel: STOP_ZOOM,
-    }));
+    if (stop) {
+      setCameraState(state => ({
+        ...state,
+        centerCoordinate: stop?.geom.coordinates || DEFAULT_COORD,
+        zoomLevel: STOP_ZOOM,
+      }));
+    }
   }, [componentId, stop]);
 
-  // useEffect(() => {
-  //   const radius = getRadiusByZoomLat(
-  //     cameraState.zoomLevel,
-  //     cameraState.centerCoordinate[0],
-  //   );
-
-  //   console.log({
-  //     location: cameraState.centerCoordinate,
-  //     radius,
-  //     pitch: cameraState.pitch,
-  //   });
-  // }, [cameraState]);
+  const stopTimes = useMemo(() => {
+    return trip?.stopTimes.map((stopTime: IStopTime) => ({
+      ...stopTime,
+      stop: client.readFragment({
+        id: (() => {
+          const { feedIndex, parentStation, stopId } = stopTime.stop;
+          return `Stop:${feedIndex}:${parentStation || stopId}`;
+        })(),
+        fragment: STOP_FIELDS,
+      }),
+    }));
+  }, [client, trip?.stopTimes]);
 
   const onStopPress = useCallback<StopTimeCallback>(
     ({ stopId, tripId, feedIndex }) => {
@@ -121,14 +130,27 @@ const MapScreen: FC = () => {
 
   const onRegionDidChange = useCallback(
     (feature: Feature<Point, RegionPayload>) => {
+      const { geometry, properties } = feature;
       setMarkerVisible(true);
+
       setCameraState({
-        centerCoordinate: feature.geometry.coordinates,
-        pitch: feature.properties.pitch,
-        zoomLevel: feature.properties.zoomLevel,
+        ...cameraState,
+        pitch: properties.pitch,
+        zoomLevel: properties.zoomLevel,
+      });
+
+      const radius = getRadiusByZoomLat(
+        properties.zoomLevel,
+        geometry.coordinates[0],
+      );
+
+      console.log('GET NEARBY STOPS', {
+        location: geometry.coordinates,
+        radius,
+        pitch: properties.pitch,
       });
     },
-    [],
+    [cameraState],
   );
 
   const onLongPress = useCallback(
@@ -136,17 +158,17 @@ const MapScreen: FC = () => {
       const { geometry } = feature;
       const point = geometry as Point;
       setCameraState({
-        ...cameraState,
         centerCoordinate: point.coordinates,
         pitch: 0,
         zoomLevel: 18,
       });
     },
-    [cameraState],
+    [],
   );
 
-  const shapeLayerId = `line-layer-${trip?.feedIndex}:${trip?.tripId}`;
+  const shapeLayerId = `line-layer-${trip?.feedIndex}:${trip?.directionId}:${trip?.tripId}`;
 
+  console.log({ shapeLayerId });
   return (
     <View style={styles.page}>
       <View style={styles.container}>
@@ -164,23 +186,24 @@ const MapScreen: FC = () => {
               coordinates={stop.geom.coordinates}
             />
           )}
-          {!loading && (data || trip?.stopTimes) && (
+          {!loading && stopTimes && (
             <TripShape
-              shapeSourceId={`shape-source-${trip?.feedIndex}:${trip?.tripId}`}
+              shapeSourceId={`shape-source-${trip?.feedIndex}:${trip?.directionId}:${trip?.tripId}`}
               layerId={shapeLayerId}
               color={route?.routeColor}
               coordinates={
                 data?.shape.geom.coordinates ||
-                trip?.stopTimes.map(st => st.stop.geom.coordinates)
+                stopTimes?.map(st => st.stop.geom.coordinates)
               }
             />
           )}
-          {trip?.stopTimes &&
-            trip?.stopTimes.map((st: IStopTime) => (
+          {trip &&
+            stopTimes &&
+            stopTimes.map((st: IStopTime) => (
               <StopShape
                 key={st.stop.stopId}
-                feedIndex={trip.feedIndex}
-                stopId={st.stop.stopId}
+                feedIndex={st.stop.feedIndex}
+                stopId={st.stop.parentStation || st.stop.stopId}
                 tripId={trip.tripId}
                 coordinates={st.stop.geom.coordinates}
                 color={route?.routeColor}
