@@ -166,9 +166,8 @@ const MapScreen: FC = () => {
     [],
   );
 
-  const shapeLayerId = `line-layer-${trip?.feedIndex}:${trip?.directionId}:${trip?.tripId}`;
+  const shapeLayerId = 'line-layer-selected-trip';
 
-  console.log({ shapeLayerId });
   return (
     <View style={styles.page}>
       <View style={styles.container}>

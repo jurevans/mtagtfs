@@ -78,9 +78,6 @@ const TripScreen: FC<Props> = ({ tripId, route }) => {
     (data?.stations &&
       trip?.stopTimes.map((stopTime: IStopTime) => {
         const { feedIndex, stopId, parentStation } = stopTime.stop;
-        console.log('CACHE_ID:', {
-          id: `Stop:${feedIndex}:${parentStation || stopId}`,
-        });
         return {
           ...stopTime,
           stop: client.readFragment({
