@@ -6,12 +6,23 @@ export interface IActiveStop {
   stopId: string;
 }
 
+export interface ITransferPayload {
+  stopId: string;
+  transfers: string[];
+}
+
+export type TransfersIndex = {
+  [key: string]: string[];
+};
+
 interface InitialState {
   activeStop: IActiveStop | null;
+  transfers: TransfersIndex;
 }
 
 const initialState: InitialState = {
   activeStop: null,
+  transfers: {},
 };
 
 const stopSlice = createSlice({
@@ -20,6 +31,13 @@ const stopSlice = createSlice({
   reducers: {
     setActiveStop: (state, action: PayloadAction<IActiveStop>) => {
       state.activeStop = action.payload;
+    },
+    setTransfers: (state, action: PayloadAction<ITransferPayload>) => {
+      const { stopId, transfers } = action.payload;
+
+      if (!(stopId in state.transfers)) {
+        state.transfers[stopId] = transfers;
+      }
     },
   },
 });

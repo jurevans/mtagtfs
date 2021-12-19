@@ -15,6 +15,7 @@ import { setActiveStop } from 'slices/stops';
 import { GET_SHAPE } from 'apollo/queries';
 import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
 import { IRoute, IShape, IStop, IStopTime, ITrip } from 'interfaces';
+// import { getRadiusByZoomLat } from 'util/';
 import styles from './styles';
 
 const DEFAULT_COORD: Position = [-73.94594865587045, 40.7227534777328];
@@ -87,6 +88,19 @@ const MapScreen: FC = () => {
     }));
   }, [componentId, stop]);
 
+  // useEffect(() => {
+  //   const radius = getRadiusByZoomLat(
+  //     cameraState.zoomLevel,
+  //     cameraState.centerCoordinate[0],
+  //   );
+
+  //   console.log({
+  //     location: cameraState.centerCoordinate,
+  //     radius,
+  //     pitch: cameraState.pitch,
+  //   });
+  // }, [cameraState]);
+
   const onStopPress = useCallback<StopTimeCallback>(
     ({ stopId, tripId, feedIndex }) => {
       setMarkerVisible(false);
@@ -108,10 +122,11 @@ const MapScreen: FC = () => {
   const onRegionDidChange = useCallback(
     (feature: Feature<Point, RegionPayload>) => {
       setMarkerVisible(true);
-      setCameraState(state => ({
-        ...state,
+      setCameraState({
+        centerCoordinate: feature.geometry.coordinates,
         pitch: feature.properties.pitch,
-      }));
+        zoomLevel: feature.properties.zoomLevel,
+      });
     },
     [],
   );
