@@ -20,8 +20,8 @@ const DashboardScreen: FC = () => {
   const { push } = useNavigation();
   const { loading, error, data } = useQuery<{ feeds: IFeed[] }>(GET_FEEDS);
 
-  if (loading) <LoadingView message="Loading feeds" />;
-  if (error) <ErrorView message={error.message} />;
+  if (loading) { <LoadingView message="Loading feeds" />; }
+  if (error) { <ErrorView message={error.message} />; }
   const { feeds } = data || {};
 
   const renderItem = ({ item }: ListRenderItemInfo<IFeed>) => (

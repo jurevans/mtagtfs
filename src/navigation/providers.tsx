@@ -13,7 +13,7 @@ export const withProviders =
     store: any,
     client: any,
   ): FC<P & Props> =>
-  (props: P & Props): ReactElement =>
+    (props: P & Props): ReactElement =>
     (
       <NavigationProvider value={{ componentId: props.componentId }}>
         <Provider store={store}>

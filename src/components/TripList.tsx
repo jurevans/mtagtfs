@@ -6,12 +6,12 @@ import StopTimeButton, {
 } from 'components/StopTimeButton';
 import { IStopTime } from 'interfaces';
 
-type Props = {
+interface Props {
   tripId: string;
   stopTimes: IStopTime[];
   styles?: IStopTimeStyles;
   onPress: StopTimeCallback;
-};
+}
 
 const getRenderItem = (
   tripId: string,

@@ -3,7 +3,7 @@ import MapboxGL, { CircleLayerStyle } from '@react-native-mapbox-gl/maps';
 import { point, Position } from '@turf/turf';
 import { StopTimeCallback } from './StopTimeButton';
 
-type Props = {
+interface Props {
   feedIndex: number;
   tripId: string;
   stopId: string;
@@ -12,7 +12,7 @@ type Props = {
   isActive?: boolean;
   aboveLayerId: string;
   onPress: StopTimeCallback;
-};
+}
 
 const getCircleStyles = (
   color: string,

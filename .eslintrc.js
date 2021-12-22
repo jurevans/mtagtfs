@@ -1,8 +1,8 @@
 module.exports = {
   root: true,
-  extends: ['@react-native-community', 'prettier'],
+  extends: ['@react-native-community'],
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': 0,
     'no-shadow': [
       'error',
       { builtinGlobals: true, hoist: 'functions', allow: ['tripId'] },
