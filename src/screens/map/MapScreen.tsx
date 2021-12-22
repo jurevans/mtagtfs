@@ -186,31 +186,31 @@ const MapScreen: FC = () => {
             />
           )}
           {!loading && stopTimes && (
-            <TripShape
-              shapeSourceId={`shape-source-${trip?.feedIndex}:${trip?.directionId}:${trip?.tripId}`}
-              layerId={shapeLayerId}
-              color={route?.routeColor}
-              coordinates={
-                data?.shape.geom.coordinates ||
-                stopTimes?.map(st => st.stop.geom.coordinates)
-              }
-            />
-          )}
-          {trip &&
-            stopTimes &&
-            stopTimes.map((st: IStopTime) => (
-              <StopShape
-                key={st.stop.stopId}
-                feedIndex={st.stop.feedIndex}
-                stopId={st.stop.parentStation || st.stop.stopId}
-                tripId={trip.tripId}
-                coordinates={st.stop.geom.coordinates}
+            <>
+              <TripShape
+                shapeSourceId={`shape-source-${trip?.feedIndex}:${trip?.directionId}:${trip?.tripId}`}
+                layerId={shapeLayerId}
                 color={route?.routeColor}
-                isActive={st.stop?.stopId === stop?.stopId}
-                aboveLayerId={shapeLayerId}
-                onPress={onStopPress}
+                coordinates={
+                  data?.shape.geom.coordinates ||
+                  stopTimes?.map(st => st.stop.geom.coordinates)
+                }
               />
-            ))}
+              {stopTimes.map((st: IStopTime) => (
+                <StopShape
+                  key={st.stop.stopId}
+                  feedIndex={st.stop.feedIndex}
+                  stopId={st.stop.parentStation || st.stop.stopId}
+                  tripId={trip?.tripId || ''}
+                  coordinates={st.stop.geom.coordinates}
+                  color={route?.routeColor}
+                  isActive={st.stop?.stopId === stop?.stopId}
+                  aboveLayerId={shapeLayerId}
+                  onPress={onStopPress}
+                />
+              ))}
+            </>
+          )}
         </MapView>
       </View>
     </View>
