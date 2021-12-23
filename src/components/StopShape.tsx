@@ -10,7 +10,7 @@ interface Props {
   coordinates: Position;
   color?: string;
   isActive?: boolean;
-  aboveLayerId: string;
+  aboveLayerId?: string;
   onPress: StopTimeCallback;
 }
 
@@ -20,7 +20,7 @@ const getCircleStyles = (
 ): CircleLayerStyle => ({
   circleRadius: isActive ? 16 : 6,
   circleColor: `#${isActive ? 'ddd' : color || 'ddd'}`,
-  circleStrokeColor: `#ddd`,
+  circleStrokeColor: '#ddd',
   circleStrokeWidth: 2,
   circlePitchScale: 'map',
   circlePitchAlignment: 'map',
@@ -61,4 +61,4 @@ const StopShape: FC<Props> = ({
   );
 };
 
-export default StopShape;
+export default React.memo(StopShape);

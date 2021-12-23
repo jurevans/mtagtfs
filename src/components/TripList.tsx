@@ -51,4 +51,4 @@ const TripList: FC<Props> = ({ tripId, stopTimes, styles = {}, onPress }) => {
   );
 };
 
-export default TripList;
+export default React.memo(TripList);

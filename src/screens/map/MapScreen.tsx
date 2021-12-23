@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { View } from 'react-native';
-import { gql, useQuery, useApolloClient } from '@apollo/client';
+import { gql, useQuery, useApolloClient, useLazyQuery } from '@apollo/client';
 import { Feature, Point, Position } from '@turf/turf';
 import { RegionPayload } from '@react-native-mapbox-gl/maps';
 import { Navigation } from 'react-native-navigation';
@@ -19,7 +19,7 @@ import StopShape from 'components/StopShape';
 import StopMarker from 'components/StopMarker';
 import { StopTimeCallback } from 'components/StopTimeButton';
 import { setActiveStop } from 'slices/stops';
-import { GET_SHAPE } from 'apollo/queries';
+import { GET_SHAPE, GET_STOPS_BY_LOCATION } from 'apollo/queries';
 import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
 import { IRoute, IShape, IStop, IStopTime, ITrip } from 'interfaces';
 import { getRadiusByZoomLat } from 'util/';
@@ -28,10 +28,6 @@ import styles from './styles';
 const DEFAULT_COORD: Position = [-73.94594865587045, 40.7227534777328];
 const DEFAULT_ZOOM = 11;
 const STOP_ZOOM = 15;
-
-interface ShapeVars {
-  shapeId?: string;
-}
 
 const MapScreen: FC = () => {
   const { activeStop } = useAppSelector(state => state.stops);
@@ -57,7 +53,7 @@ const MapScreen: FC = () => {
   });
 
   // Query shape geometries
-  const { loading, data } = useQuery<{ shape: IShape }, ShapeVars>(GET_SHAPE, {
+  const { loading, data } = useQuery<{ shape: IShape }>(GET_SHAPE, {
     variables: {
       shapeId: trip?.shapeId,
     },
@@ -128,6 +124,17 @@ const MapScreen: FC = () => {
     setMarkerVisible(false);
   }, []);
 
+  const [getStopsByLocation, {
+    data: stopsData,
+  }] = useLazyQuery<{ stopsByLocation: IStop[] }>(GET_STOPS_BY_LOCATION);
+  console.log({ stopsData });
+  // const { stopsByLocation } = stopsData || {};
+
+  const radius = parseFloat(getRadiusByZoomLat(
+    cameraState.zoomLevel,
+    cameraState.centerCoordinate[0],
+  ).toFixed(5));
+
   const onRegionDidChange = useCallback(
     (feature: Feature<Point, RegionPayload>) => {
       const { geometry, properties } = feature;
@@ -139,17 +146,18 @@ const MapScreen: FC = () => {
         zoomLevel: properties.zoomLevel,
       });
 
-      const radius = getRadiusByZoomLat(
-        properties.zoomLevel,
-        geometry.coordinates[0],
-      );
-
-      console.log('GET NEARBY STOPS', {
-        location: geometry.coordinates,
-        radius,
-        pitch: properties.pitch,
-      });
+      const [latitude, longitude] = geometry.coordinates;
+      if (properties.zoomLevel > 12) {
+        getStopsByLocation({
+          variables: {
+            latitude,
+            longitude,
+            radius: radius,
+          },
+        });
+      }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [cameraState],
   );
 
@@ -211,6 +219,17 @@ const MapScreen: FC = () => {
               ))}
             </>
           )}
+          {/*stopsByLocation && stopsByLocation.map((s: IStop, i: number) => (
+            <StopShape
+              key={`${s.feedIndex}:${s.stopId}:${i}`}
+              feedIndex={s.feedIndex}
+              stopId={s.parentStation || s.stopId}
+              tripId={''}
+              coordinates={s.geom.coordinates}
+              isActive={s?.stopId === stop?.stopId}
+              onPress={onStopPress}
+            />
+          ))*/}
         </MapView>
       </View>
     </View>

@@ -15,7 +15,10 @@ const authMiddleware = new ApolloLink((operation, forward) => {
       'x-api-key': GTFS_API_GATEWAY_KEY,
     },
   }));
-  return forward(operation);
+  return forward(operation).map(result => {
+    // console.info(operation.getContext().response);
+    return result;
+  });
 });
 
 const client = new ApolloClient({

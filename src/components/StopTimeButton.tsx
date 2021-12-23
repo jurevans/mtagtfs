@@ -52,4 +52,4 @@ const StopTimeButton: FC<Props> = ({
   );
 };
 
-export default StopTimeButton;
+export default React.memo(StopTimeButton);

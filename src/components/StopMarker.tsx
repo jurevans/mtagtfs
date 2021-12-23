@@ -31,4 +31,4 @@ const StopMarker: FC<Props> = ({
   </MapboxGL.MarkerView>
 );
 
-export default StopMarker;
+export default React.memo(StopMarker);

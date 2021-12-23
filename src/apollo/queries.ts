@@ -6,6 +6,15 @@ import {
   TRIP_FIELDS,
 } from './fragments';
 
+export const GET_FEEDS = gql`
+  ${FEED_FIELDS}
+  query GetFeeds {
+    feeds {
+      ...FeedFields
+    }
+  }
+`;
+
 export const GET_STATIONS = gql`
   ${STOP_FIELDS}
   query GetStations($feedIndex: Int!, $stationIds: [String!]) {
@@ -15,11 +24,14 @@ export const GET_STATIONS = gql`
   }
 `;
 
-export const GET_FEEDS = gql`
-  ${FEED_FIELDS}
-  query GetFeeds {
-    feeds {
-      ...FeedFields
+export const GET_STOPS_BY_LOCATION = gql`
+  ${STOP_FIELDS}
+  query GetStopsByLocation($latitude: Float!, $longitude: Float!, $radius: Float!) {
+    stopsByLocation(
+      location: [$latitude, $longitude]
+		  radius: $radius
+    ) {
+      ...StopFields
     }
   }
 `;

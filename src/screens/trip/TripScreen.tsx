@@ -8,7 +8,7 @@ import { setActiveStop } from 'slices/stops';
 import TripList from 'components/TripList';
 import { StopTimeCallback } from 'components/StopTimeButton';
 import { STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
-import { IRoute, IStopTime, ITrip } from 'interfaces';
+import { IRoute, IStop, IStopTime, ITrip } from 'interfaces';
 import styles from './styles';
 import { GET_STATIONS } from 'apollo/queries';
 import LoadingView from 'components/LoadingView';
@@ -30,13 +30,14 @@ const TripScreen: FC<Props> = ({ tripId, route }) => {
       ${TRIP_FIELDS}
     `,
   });
+
   const stationIds =
     trip?.stopTimes.map(
       (stopTime: IStopTime) =>
         stopTime.stop.parentStation || stopTime.stop.stopId,
     ) || [];
 
-  const { data, loading, error } = useQuery(GET_STATIONS, {
+  const { data, loading, error } = useQuery<{ stations: IStop[] }>(GET_STATIONS, {
     variables: {
       feedIndex: trip?.feedIndex,
       stationIds,

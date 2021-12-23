@@ -30,4 +30,4 @@ const TripShape: FC<Props> = ({
   );
 };
 
-export default TripShape;
+export default React.memo(TripShape);

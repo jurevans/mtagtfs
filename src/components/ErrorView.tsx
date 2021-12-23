@@ -16,4 +16,4 @@ const ErrorView: FC<Props> = ({ message, styles = {} }) => {
   );
 };
 
-export default ErrorView;
+export default React.memo(ErrorView);

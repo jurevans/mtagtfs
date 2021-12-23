@@ -14,4 +14,4 @@ const LoadingView: FC<Props> = ({ message, styles = {} }) => {
   );
 };
 
-export default LoadingView;
+export default React.memo(LoadingView);
