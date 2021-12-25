@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import MapboxGL, { CircleLayerStyle } from '@react-native-mapbox-gl/maps';
 import { point, Position } from '@turf/turf';
-import { StopTimeCallback } from './StopTime';
+import { StopTimeCallback } from './StopTimeButton';
 
 type Props = {
   feedIndex: number;
@@ -34,7 +34,7 @@ const getCircleStyles = (
   },
 });
 
-const Stop: FC<Props> = ({
+const StopShape: FC<Props> = ({
   feedIndex,
   tripId,
   stopId,
@@ -61,4 +61,4 @@ const Stop: FC<Props> = ({
   );
 };
 
-export default Stop;
+export default StopShape;

@@ -9,8 +9,8 @@ import {
 import { useNavigation } from 'react-native-navigation-hooks';
 import { useQuery } from '@apollo/client';
 import { GET_FEEDS } from 'apollo/queries';
-import Loading from 'components/Loading';
-import Error from 'components/Error';
+import LoadingView from 'components/LoadingView';
+import ErrorView from 'components/ErrorView';
 import { Screens } from 'navigation/screens';
 import { IFeed } from 'interfaces';
 import config from 'config';
@@ -21,8 +21,8 @@ const DashboardScreen: FC = () => {
 
   const { loading, error, data } = useQuery<{ feeds: IFeed[] }>(GET_FEEDS);
 
-  if (loading) <Loading message="Loading feeds" />;
-  if (error) <Error message={error.message} />;
+  if (loading) <LoadingView message="Loading feeds" />;
+  if (error) <ErrorView message={error.message} />;
 
   const { feeds } = data || {};
 

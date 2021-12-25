@@ -31,7 +31,7 @@ type Props = {
   onPress: StopTimeCallback;
 };
 
-const StopTime: FC<Props> = ({
+const StopTimeButton: FC<Props> = ({
   feedIndex,
   tripId,
   stopId,
@@ -52,4 +52,4 @@ const StopTime: FC<Props> = ({
   );
 };
 
-export default StopTime;
+export default StopTimeButton;

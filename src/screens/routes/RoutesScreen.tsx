@@ -15,8 +15,8 @@ import { gql, useApolloClient, useQuery } from '@apollo/client';
 import { GET_ROUTES } from 'apollo/queries';
 import { FEED_FIELDS } from 'apollo/fragments';
 import { Screens } from 'navigation/screens';
-import Error from 'components/Error';
-import Loading from 'components/Loading';
+import ErrorView from 'components/ErrorView';
+import LoadingView from 'components/LoadingView';
 import { IFeed, IRoute } from 'interfaces';
 import styles from './styles';
 
@@ -80,8 +80,8 @@ const RoutesScreen: FC<Props> = ({ feedIndex }) => {
     </TouchableOpacity>
   );
 
-  if (loading) return <Loading message="Loading routes..." />;
-  if (error) return <Error message={error.message} styles={styles.error} />;
+  if (loading) return <LoadingView message="Loading routes..." />;
+  if (error) return <ErrorView message={error.message} styles={styles.error} />;
 
   return (
     <View style={styles.root}>

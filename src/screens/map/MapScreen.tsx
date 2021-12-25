@@ -6,15 +6,16 @@ import { RegionPayload } from '@react-native-mapbox-gl/maps';
 import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
 import { useAppDispatch, useAppSelector } from 'store/hooks';
-import Map from 'components/Map';
+import MapView from 'components/MapView';
 import TripShape from 'components/TripShape';
-import Stop from 'components/Stop';
+import StopShape from 'components/StopShape';
 import StopMarker from 'components/StopMarker';
-import { StopTimeCallback } from 'components/StopTime';
+import { StopTimeCallback } from 'components/StopTimeButton';
 import { setActiveStop } from 'slices/stops';
 import { GET_SHAPE } from 'apollo/queries';
 import { ROUTE_FIELDS, STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
 import { IRoute, IShape, IStop, IStopTime, ITrip } from 'interfaces';
+// import { getRadiusByZoomLat } from 'util/';
 import styles from './styles';
 
 const DEFAULT_COORD: Position = [-73.94594865587045, 40.7227534777328];
@@ -31,7 +32,7 @@ const MapScreen: FC = () => {
   const client = useApolloClient();
   const { componentId = '' } = useContext(NavigationContext);
 
-  const [isMarkerVisible, setMarkerVisible] = useState(true);
+  const [isMarkerVisible, setMarkerVisible] = useState(false);
   const [cameraState, setCameraState] = useState({
     zoomLevel: DEFAULT_ZOOM,
     centerCoordinate: DEFAULT_COORD,
@@ -87,6 +88,19 @@ const MapScreen: FC = () => {
     }));
   }, [componentId, stop]);
 
+  // useEffect(() => {
+  //   const radius = getRadiusByZoomLat(
+  //     cameraState.zoomLevel,
+  //     cameraState.centerCoordinate[0],
+  //   );
+
+  //   console.log({
+  //     location: cameraState.centerCoordinate,
+  //     radius,
+  //     pitch: cameraState.pitch,
+  //   });
+  // }, [cameraState]);
+
   const onStopPress = useCallback<StopTimeCallback>(
     ({ stopId, tripId, feedIndex }) => {
       setMarkerVisible(false);
@@ -108,10 +122,11 @@ const MapScreen: FC = () => {
   const onRegionDidChange = useCallback(
     (feature: Feature<Point, RegionPayload>) => {
       setMarkerVisible(true);
-      setCameraState(state => ({
-        ...state,
+      setCameraState({
+        centerCoordinate: feature.geometry.coordinates,
         pitch: feature.properties.pitch,
-      }));
+        zoomLevel: feature.properties.zoomLevel,
+      });
     },
     [],
   );
@@ -135,7 +150,7 @@ const MapScreen: FC = () => {
   return (
     <View style={styles.page}>
       <View style={styles.container}>
-        <Map
+        <MapView
           centerCoordinate={centerCoordinate}
           zoomLevel={zoomLevel}
           pitch={pitch}
@@ -162,7 +177,7 @@ const MapScreen: FC = () => {
           )}
           {trip?.stopTimes &&
             trip?.stopTimes.map((st: IStopTime) => (
-              <Stop
+              <StopShape
                 key={st.stop.stopId}
                 feedIndex={trip.feedIndex}
                 stopId={st.stop.stopId}
@@ -174,7 +189,7 @@ const MapScreen: FC = () => {
                 onPress={onStopPress}
               />
             ))}
-        </Map>
+        </MapView>
       </View>
     </View>
   );
