@@ -2,12 +2,12 @@ import MapboxGL, { LineLayerStyle } from '@react-native-mapbox-gl/maps';
 import { lineString, Position } from '@turf/turf';
 import React, { FC } from 'react';
 
-type Props = {
+interface Props {
   shapeSourceId: string;
   layerId: string;
   color?: string;
   coordinates?: Position[];
-};
+}
 
 const getLineStyles = (color?: string): LineLayerStyle => ({
   lineColor: `#${color ? color : 'ddd'}`,
@@ -30,4 +30,4 @@ const TripShape: FC<Props> = ({
   );
 };
 
-export default TripShape;
+export default React.memo(TripShape);

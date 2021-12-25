@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { StyleProp, Text, View } from 'react-native';
 
-type Props = {
+interface Props {
   message?: string;
   styles?: StyleProp<any>;
-};
+}
 
 const LoadingView: FC<Props> = ({ message, styles = {} }) => {
   return (
@@ -14,4 +14,4 @@ const LoadingView: FC<Props> = ({ message, styles = {} }) => {
   );
 };
 
-export default LoadingView;
+export default React.memo(LoadingView);

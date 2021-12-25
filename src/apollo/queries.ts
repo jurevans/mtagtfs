@@ -15,9 +15,29 @@ export const GET_FEEDS = gql`
   }
 `;
 
+export const GET_STATIONS = gql`
+  ${STOP_FIELDS}
+  query GetStations($feedIndex: Int!, $stationIds: [String!]) {
+    stations(feedIndex: $feedIndex, stationIds: $stationIds) {
+      ...StopFields
+    }
+  }
+`;
+
+export const GET_STOPS_BY_LOCATION = gql`
+  ${STOP_FIELDS}
+  query GetStopsByLocation($latitude: Float!, $longitude: Float!, $radius: Float!) {
+    stopsByLocation(
+      location: [$latitude, $longitude]
+		  radius: $radius
+    ) {
+      ...StopFields
+    }
+  }
+`;
+
 export const GET_TRIPS = gql`
   ${TRIP_FIELDS}
-  ${STOP_FIELDS}
   query GetNextTrips($feedIndex: Int!, $routeId: String!) {
     nextTrips(feedIndex: $feedIndex, routeId: $routeId) {
       ...TripFields
@@ -25,7 +45,8 @@ export const GET_TRIPS = gql`
         stopSequence
         departure
         stop {
-          ...StopFields
+          stopId
+          parentStation
         }
       }
     }

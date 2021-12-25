@@ -18,11 +18,7 @@ import styles from './styles';
 
 const DashboardScreen: FC = () => {
   const { push } = useNavigation();
-
   const { loading, error, data } = useQuery<{ feeds: IFeed[] }>(GET_FEEDS);
-
-  if (loading) <LoadingView message="Loading feeds" />;
-  if (error) <ErrorView message={error.message} />;
 
   const { feeds } = data || {};
 
@@ -40,6 +36,8 @@ const DashboardScreen: FC = () => {
     <View style={styles.root}>
       <View style={styles.heading}>
         <Text style={styles.header}>Dashboard</Text>
+        {loading && <LoadingView message="Loading feeds" />}
+        {error && <ErrorView message={error.message} />}
       </View>
       <FlatList
         data={feeds}

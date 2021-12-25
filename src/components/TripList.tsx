@@ -6,12 +6,12 @@ import StopTimeButton, {
 } from 'components/StopTimeButton';
 import { IStopTime } from 'interfaces';
 
-type Props = {
+interface Props {
   tripId: string;
   stopTimes: IStopTime[];
   styles?: IStopTimeStyles;
   onPress: StopTimeCallback;
-};
+}
 
 const getRenderItem = (
   tripId: string,
@@ -20,12 +20,12 @@ const getRenderItem = (
   onPress: StopTimeCallback,
 ) => {
   const { stop, departure } = stopTime;
-  const { feedIndex, stopId, stopName } = stop;
+  const { feedIndex, stopId, parentStation, stopName } = stop;
   return (
     <StopTimeButton
       feedIndex={feedIndex}
       tripId={tripId}
-      stopId={stopId}
+      stopId={parentStation || stopId}
       stopName={stopName}
       departure={departure}
       buttonStyles={styles.button}
@@ -43,9 +43,12 @@ const TripList: FC<Props> = ({ tripId, stopTimes, styles = {}, onPress }) => {
       renderItem={({ item }: ListRenderItemInfo<IStopTime>) =>
         getRenderItem(tripId, item, styles, onPress)
       }
-      keyExtractor={(stopTime: IStopTime) => stopTime.stop.stopId}
+      keyExtractor={(stopTime: IStopTime) => {
+        const { feedIndex, stopId, parentStation } = stopTime.stop;
+        return `${feedIndex}:${parentStation || stopId}`;
+      }}
     />
   );
 };
 
-export default TripList;
+export default React.memo(TripList);

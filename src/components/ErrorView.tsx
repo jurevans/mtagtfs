@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { StyleProp, Text, View } from 'react-native';
 
-type Props = {
+interface Props {
   message?: string;
   styles?: StyleProp<any>;
-};
+}
 
 const ErrorView: FC<Props> = ({ message, styles = {} }) => {
   return (
@@ -16,4 +16,4 @@ const ErrorView: FC<Props> = ({ message, styles = {} }) => {
   );
 };
 
-export default ErrorView;
+export default React.memo(ErrorView);

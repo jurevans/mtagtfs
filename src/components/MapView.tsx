@@ -1,14 +1,14 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { GestureResponderEvent, StyleSheet } from 'react-native';
 import MapboxGL, { RegionPayload } from '@react-native-mapbox-gl/maps';
 import { Feature, Point, Position } from '@turf/turf';
 import { MAPBOX_ACCESS_TOKEN, MAPBOX_STYLE_URL } from '@env';
 
-type Props = {
+interface Props {
   centerCoordinate: Position;
   zoomLevel: number;
   pitch: number;
-  children: any;
+  children: ReactNode;
   onRegionWillChange?: (feature: Feature<Point, RegionPayload>) => void;
   onRegionDidChange?: (feature: Feature<Point, RegionPayload>) => void;
   onTouchStart?: (e: GestureResponderEvent) => void;
@@ -16,7 +16,7 @@ type Props = {
   onLongPress?: (
     feature: Feature<GeoJSON.Geometry, GeoJSON.GeoJsonProperties>,
   ) => void;
-};
+}
 
 MapboxGL.setAccessToken(MAPBOX_ACCESS_TOKEN);
 

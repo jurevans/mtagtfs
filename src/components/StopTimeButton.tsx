@@ -19,7 +19,7 @@ export interface IStopTimeStyles {
   departure?: StyleProp<TextStyle>;
 }
 
-type Props = {
+interface Props {
   feedIndex: number;
   tripId: string;
   stopId: string;
@@ -29,7 +29,7 @@ type Props = {
   labelStyles?: StyleProp<TextStyle>;
   departureStyles?: StyleProp<TextStyle>;
   onPress: StopTimeCallback;
-};
+}
 
 const StopTimeButton: FC<Props> = ({
   feedIndex,
@@ -52,4 +52,4 @@ const StopTimeButton: FC<Props> = ({
   );
 };
 
-export default StopTimeButton;
+export default React.memo(StopTimeButton);

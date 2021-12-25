@@ -1,15 +1,18 @@
 import React, { FC, useCallback, useContext, useEffect } from 'react';
 import { Text, View } from 'react-native';
-import { gql, useApolloClient } from '@apollo/client';
+import { gql, useApolloClient, useQuery } from '@apollo/client';
 import { Navigation } from 'react-native-navigation';
 import { NavigationContext } from 'react-native-navigation-hooks';
 import { useAppDispatch } from 'store';
 import { setActiveStop } from 'slices/stops';
 import TripList from 'components/TripList';
 import { StopTimeCallback } from 'components/StopTimeButton';
-import { TRIP_FIELDS } from 'apollo/fragments';
-import { IRoute, ITrip } from 'interfaces';
+import { STOP_FIELDS, TRIP_FIELDS } from 'apollo/fragments';
+import { IRoute, IStop, IStopTime, ITrip } from 'interfaces';
 import styles from './styles';
+import { GET_STATIONS } from 'apollo/queries';
+import LoadingView from 'components/LoadingView';
+import ErrorView from 'components/ErrorView';
 
 type Props = {
   route: IRoute;
@@ -26,6 +29,19 @@ const TripScreen: FC<Props> = ({ tripId, route }) => {
     fragment: gql`
       ${TRIP_FIELDS}
     `,
+  });
+
+  const stationIds =
+    trip?.stopTimes.map(
+      (stopTime: IStopTime) =>
+        stopTime.stop.parentStation || stopTime.stop.stopId,
+    ) || [];
+
+  const { data, loading, error } = useQuery<{ stations: IStop[] }>(GET_STATIONS, {
+    variables: {
+      feedIndex: trip?.feedIndex,
+      stationIds,
+    },
   });
 
   useEffect(() => {
@@ -59,20 +75,36 @@ const TripScreen: FC<Props> = ({ tripId, route }) => {
     [componentId, dispatch],
   );
 
+  const stopTimes =
+    (data?.stations &&
+      trip?.stopTimes.map((stopTime: IStopTime) => {
+        const { feedIndex, stopId, parentStation } = stopTime.stop;
+        return {
+          ...stopTime,
+          stop: client.readFragment({
+            id: `Stop:${feedIndex}:${parentStation || stopId}`,
+            fragment: STOP_FIELDS,
+          }),
+        };
+      })) ||
+    [];
+
   return (
     <View style={styles.root}>
       <View style={styles.heading}>
         <Text style={styles.header}>{route.routeLongName}</Text>
         <Text style={styles.description}>{route.routeDesc}</Text>
+        {loading && <LoadingView message="Loading stop times" />}
+        {error && <ErrorView message={error.message} />}
       </View>
-      {trip && (
+      {trip && stopTimes && (
         <View>
           <Text style={styles.tripHeader}>
             {trip.tripHeadsign} -{trip.directionId ? 'Inbound' : 'Outbound'}
           </Text>
           <TripList
             tripId={trip?.tripId}
-            stopTimes={trip.stopTimes}
+            stopTimes={stopTimes}
             styles={{
               button: styles.button,
               label: { fontWeight: 'bold', fontSize: 16 },

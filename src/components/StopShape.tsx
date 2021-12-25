@@ -3,16 +3,16 @@ import MapboxGL, { CircleLayerStyle } from '@react-native-mapbox-gl/maps';
 import { point, Position } from '@turf/turf';
 import { StopTimeCallback } from './StopTimeButton';
 
-type Props = {
+interface Props {
   feedIndex: number;
   tripId: string;
   stopId: string;
   coordinates: Position;
   color?: string;
   isActive?: boolean;
-  aboveLayerId: string;
+  aboveLayerId?: string;
   onPress: StopTimeCallback;
-};
+}
 
 const getCircleStyles = (
   color: string,
@@ -20,7 +20,7 @@ const getCircleStyles = (
 ): CircleLayerStyle => ({
   circleRadius: isActive ? 16 : 6,
   circleColor: `#${isActive ? 'ddd' : color || 'ddd'}`,
-  circleStrokeColor: `#ddd`,
+  circleStrokeColor: '#ddd',
   circleStrokeWidth: 2,
   circlePitchScale: 'map',
   circlePitchAlignment: 'map',
@@ -61,4 +61,4 @@ const StopShape: FC<Props> = ({
   );
 };
 
-export default StopShape;
+export default React.memo(StopShape);
